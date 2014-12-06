@@ -263,6 +263,8 @@ if (stream.DeepSerialize) {
 [DiagramInfoAttribute("Game")]
 public class CityNodeViewModelBase : MapNodeViewModel {
     
+    public P<Int32> _maxCellsProperty;
+    
     public ModelCollection<CityCellViewModel> _cellsProperty;
     
     public CityNodeViewModelBase(CityNodeControllerBase controller, bool initialize = true) : 
@@ -275,6 +277,7 @@ public class CityNodeViewModelBase : MapNodeViewModel {
     
     public override void Bind() {
         base.Bind();
+        _maxCellsProperty = new P<Int32>(this, "maxCells");
         _cellsProperty = new ModelCollection<CityCellViewModel>(this, "cells");
         _cellsProperty.CollectionChanged += cellsCollectionChanged;
     }
@@ -293,6 +296,21 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
             base() {
     }
     
+    public virtual P<Int32> maxCellsProperty {
+        get {
+            return this._maxCellsProperty;
+        }
+    }
+    
+    public virtual Int32 maxCells {
+        get {
+            return _maxCellsProperty.Value;
+        }
+        set {
+            _maxCellsProperty.Value = value;
+        }
+    }
+    
     public virtual ModelCollection<CityCellViewModel> cells {
         get {
             return this._cellsProperty;
@@ -305,11 +323,13 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
+        stream.SerializeInt("maxCells", this.maxCells);
         if (stream.DeepSerialize) stream.SerializeArray("cells", this.cells);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
+        		this.maxCells = stream.DeserializeInt("maxCells");;
 if (stream.DeepSerialize) {
         this.cells.Clear();
         this.cells.AddRange(stream.DeserializeObjectArray<CityCellViewModel>("cells"));
@@ -323,6 +343,7 @@ if (stream.DeepSerialize) {
     
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_maxCellsProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_cellsProperty, true, true, false));
     }
     

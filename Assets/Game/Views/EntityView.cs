@@ -35,7 +35,7 @@ public partial class EntityView {
 
 	void setupAttackDefense()
 	{
-		attackDefenseUI = GetComponent<SpawnFollowingUI> ();
+		//attackDefenseUI = GetComponent<SpawnFollowingUI> ();
 		attackDefenseUI.createPrefab ();
 		adView = attackDefenseUI.guiObject.GetComponent<AttackDefenseView> ();
 	}

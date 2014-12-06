@@ -94,6 +94,10 @@ public abstract class MapNodeViewBase : EntityViewBase {
 [DiagramInfoAttribute("Game")]
 public abstract class CityNodeViewBase : MapNodeViewBase {
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _maxCells;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CityNodeViewModel);
@@ -115,6 +119,8 @@ public abstract class CityNodeViewBase : MapNodeViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
+        cityNode.maxCells = this._maxCells;
     }
 }
 
@@ -410,6 +416,15 @@ public abstract class SettingsViewBase : ViewBase {
 
 public class CityNodeViewViewBase : MapNodeView {
     
+    [UFToggleGroup("maxCells")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("maxCellsChanged")]
+    public bool _BindmaxCells = true;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _maxCells;
+    
     public CityNodeViewModel CityNode {
         get {
             return ((CityNodeViewModel)(this.ViewModelObject));
@@ -429,12 +444,21 @@ public class CityNodeViewViewBase : MapNodeView {
         return this.RequestViewModel(GameManager.Container.Resolve<CityNodeController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void maxCellsChanged(Int32 value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._BindmaxCells) {
+            this.BindProperty(CityNode._maxCellsProperty, this.maxCellsChanged);
+        }
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
+        cityNode.maxCells = this._maxCells;
     }
 }
 

@@ -9,6 +9,8 @@ public class CellsGridView : MonoBehaviour {
 	GameObject cellPrefab;
 
 	public void cellsCountChanged(int value){
+		grid = GetComponent<UIGrid>();
+
 		int size = grid.GetChildList().size;
 		
 		while (value > size) {
@@ -27,7 +29,6 @@ public class CellsGridView : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		grid = GetComponent<UIGrid>();
 	}
 	
 	// Update is called once per frame
