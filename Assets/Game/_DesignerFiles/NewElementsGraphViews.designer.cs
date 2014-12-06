@@ -454,3 +454,17 @@ public class LinkViewViewBase : LinkViewBase {
 
 public partial class LinkView : LinkViewViewBase {
 }
+
+public class UnitViewViewBase : UnitViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<UnitController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class UnitView : UnitViewViewBase {
+}
