@@ -113,6 +113,8 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public P<OwnerViewModel> _ownerProperty;
     
+    public ModelCollection<MapNodeViewModel> _connectionsProperty;
+    
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -124,10 +126,19 @@ public class MapNodeViewModelBase : EntityViewModel {
     public override void Bind() {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
+        _connectionsProperty = new ModelCollection<MapNodeViewModel>(this, "connections");
+        _connectionsProperty.CollectionChanged += connectionsCollectionChanged;
+    }
+    
+    protected virtual void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
     }
 }
 
 public partial class MapNodeViewModel : MapNodeViewModelBase {
+    
+    private MapNodeViewModel _ParentMapNode;
+    
+    private MapViewModel _ParentMap;
     
     public MapNodeViewModel(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -153,6 +164,30 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
+    public virtual ModelCollection<MapNodeViewModel> connections {
+        get {
+            return this._connectionsProperty;
+        }
+    }
+    
+    public virtual MapNodeViewModel ParentMapNode {
+        get {
+            return this._ParentMapNode;
+        }
+        set {
+            _ParentMapNode = value;
+        }
+    }
+    
+    public virtual MapViewModel ParentMap {
+        get {
+            return this._ParentMap;
+        }
+        set {
+            _ParentMap = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
     }
@@ -160,24 +195,36 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		if (stream.DeepSerialize) stream.SerializeObject("owner", this.owner);
+        if (stream.DeepSerialize) stream.SerializeArray("connections", this.connections);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		if (stream.DeepSerialize) this.owner = stream.DeserializeObject<OwnerViewModel>("owner");
+if (stream.DeepSerialize) {
+        this.connections.Clear();
+        this.connections.AddRange(stream.DeserializeObjectArray<MapNodeViewModel>("connections"));
+}
     }
     
     public override void Unbind() {
         base.Unbind();
+        _connectionsProperty.CollectionChanged -= connectionsCollectionChanged;
     }
     
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_ownerProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_connectionsProperty, true, true, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+    }
+    
+    protected override void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
+        foreach (var item in args.OldItems.OfType<MapNodeViewModel>()) item.ParentMapNode = null;;
+        foreach (var item in args.NewItems.OfType<MapNodeViewModel>()) item.ParentMapNode = this;;
     }
 }
 
@@ -482,6 +529,8 @@ public class EntityViewModelBase : ViewModel {
     
     public P<Int32> _defenceProperty;
     
+    public P<ActionViewModel> _attackDelayProperty;
+    
     protected CommandWithSenderAndArgument<EntityViewModel, Int32> _TakeDamage;
     
     public EntityViewModelBase(EntityControllerBase controller, bool initialize = true) : 
@@ -496,6 +545,7 @@ public class EntityViewModelBase : ViewModel {
         base.Bind();
         _attackProperty = new P<Int32>(this, "attack");
         _defenceProperty = new P<Int32>(this, "defence");
+        _attackDelayProperty = new P<ActionViewModel>(this, "attackDelay");
     }
 }
 
@@ -539,6 +589,22 @@ public partial class EntityViewModel : EntityViewModelBase {
         }
     }
     
+    public virtual P<ActionViewModel> attackDelayProperty {
+        get {
+            return this._attackDelayProperty;
+        }
+    }
+    
+    public virtual ActionViewModel attackDelay {
+        get {
+            return _attackDelayProperty.Value;
+        }
+        set {
+            _attackDelayProperty.Value = value;
+            if (value != null) value.ParentEntity = this;
+        }
+    }
+    
     public virtual CommandWithSenderAndArgument<EntityViewModel, Int32> TakeDamage {
         get {
             return _TakeDamage;
@@ -557,12 +623,14 @@ public partial class EntityViewModel : EntityViewModelBase {
 		base.Write(stream);
         stream.SerializeInt("attack", this.attack);
         stream.SerializeInt("defence", this.defence);
+		if (stream.DeepSerialize) stream.SerializeObject("attackDelay", this.attackDelay);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
         		this.attack = stream.DeserializeInt("attack");;
         		this.defence = stream.DeserializeInt("defence");;
+		if (stream.DeepSerialize) this.attackDelay = stream.DeserializeObject<ActionViewModel>("attackDelay");
     }
     
     public override void Unbind() {
@@ -573,10 +641,182 @@ public partial class EntityViewModel : EntityViewModelBase {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_attackProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_defenceProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_attackDelayProperty, true, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
         list.Add(new ViewModelCommandInfo("TakeDamage", TakeDamage) { ParameterType = typeof(Int32) });
+    }
+}
+
+[DiagramInfoAttribute("Game")]
+public class MapViewModelBase : ViewModel {
+    
+    public ModelCollection<MapNodeViewModel> _nodesProperty;
+    
+    public MapViewModelBase(MapControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public MapViewModelBase() : 
+            base() {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        _nodesProperty = new ModelCollection<MapNodeViewModel>(this, "nodes");
+        _nodesProperty.CollectionChanged += nodesCollectionChanged;
+    }
+    
+    protected virtual void nodesCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
+    }
+}
+
+public partial class MapViewModel : MapViewModelBase {
+    
+    public MapViewModel(MapControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public MapViewModel() : 
+            base() {
+    }
+    
+    public virtual ModelCollection<MapNodeViewModel> nodes {
+        get {
+            return this._nodesProperty;
+        }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+    }
+    
+    public override void Write(ISerializerStream stream) {
+		base.Write(stream);
+        if (stream.DeepSerialize) stream.SerializeArray("nodes", this.nodes);
+    }
+    
+    public override void Read(ISerializerStream stream) {
+		base.Read(stream);
+if (stream.DeepSerialize) {
+        this.nodes.Clear();
+        this.nodes.AddRange(stream.DeserializeObjectArray<MapNodeViewModel>("nodes"));
+}
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+        _nodesProperty.CollectionChanged -= nodesCollectionChanged;
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_nodesProperty, true, true, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+    }
+    
+    protected override void nodesCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
+        foreach (var item in args.OldItems.OfType<MapNodeViewModel>()) item.ParentMap = null;;
+        foreach (var item in args.NewItems.OfType<MapNodeViewModel>()) item.ParentMap = this;;
+    }
+}
+
+[DiagramInfoAttribute("Game")]
+public class ActionViewModelBase : ViewModel {
+    
+    public P<Single> _delayProperty;
+    
+    protected CommandWithSender<ActionViewModel> _Excecute;
+    
+    public ActionViewModelBase(ActionControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public ActionViewModelBase() : 
+            base() {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        _delayProperty = new P<Single>(this, "delay");
+    }
+}
+
+public partial class ActionViewModel : ActionViewModelBase {
+    
+    private EntityViewModel _ParentEntity;
+    
+    public ActionViewModel(ActionControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public ActionViewModel() : 
+            base() {
+    }
+    
+    public virtual P<Single> delayProperty {
+        get {
+            return this._delayProperty;
+        }
+    }
+    
+    public virtual Single delay {
+        get {
+            return _delayProperty.Value;
+        }
+        set {
+            _delayProperty.Value = value;
+        }
+    }
+    
+    public virtual CommandWithSender<ActionViewModel> Excecute {
+        get {
+            return _Excecute;
+        }
+        set {
+            _Excecute = value;
+        }
+    }
+    
+    public virtual EntityViewModel ParentEntity {
+        get {
+            return this._ParentEntity;
+        }
+        set {
+            _ParentEntity = value;
+        }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+        var action = controller as ActionControllerBase;
+        this.Excecute = new CommandWithSender<ActionViewModel>(this, action.Excecute);
+    }
+    
+    public override void Write(ISerializerStream stream) {
+		base.Write(stream);
+        stream.SerializeFloat("delay", this.delay);
+    }
+    
+    public override void Read(ISerializerStream stream) {
+		base.Read(stream);
+        		this.delay = stream.DeserializeFloat("delay");;
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_delayProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("Excecute", Excecute) { ParameterType = typeof(void) });
     }
 }

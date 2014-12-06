@@ -26,6 +26,8 @@ public sealed partial class GameSceneManagerSettings {
 // </summary>
 public class GameSceneManagerBase : SceneManager {
     
+    private MapViewModel _MapInstance;
+    
     private OwnerController _OwnerController;
     
     private MapNodeController _MapNodeController;
@@ -40,7 +42,24 @@ public class GameSceneManagerBase : SceneManager {
     
     private EntityController _EntityController;
     
+    private MapController _MapController;
+    
+    private ActionController _ActionController;
+    
     public GameSceneManagerSettings _GameSceneManagerSettings = new GameSceneManagerSettings();
+    
+    [Inject("MapInstance")]
+    public virtual MapViewModel MapInstance {
+        get {
+            if ((this._MapInstance == null)) {
+                this._MapInstance = CreateInstanceViewModel<MapViewModel>(MapController, "MapInstance");
+            }
+            return this._MapInstance;
+        }
+        set {
+            _MapInstance = value;
+        }
+    }
     
     [Inject()]
     public virtual OwnerController OwnerController {
@@ -133,6 +152,32 @@ public class GameSceneManagerBase : SceneManager {
         }
     }
     
+    [Inject()]
+    public virtual MapController MapController {
+        get {
+            if ((this._MapController == null)) {
+                this._MapController = new MapController() { Container = Container };
+            }
+            return this._MapController;
+        }
+        set {
+            _MapController = value;
+        }
+    }
+    
+    [Inject()]
+    public virtual ActionController ActionController {
+        get {
+            if ((this._ActionController == null)) {
+                this._ActionController = new ActionController() { Container = Container };
+            }
+            return this._ActionController;
+        }
+        set {
+            _ActionController = value;
+        }
+    }
+    
     // <summary>
     // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
     // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
@@ -140,6 +185,7 @@ public class GameSceneManagerBase : SceneManager {
     // </summary>
     public override void Setup() {
         base.Setup();
+        Container.RegisterViewModel<MapViewModel>(MapInstance,"MapInstance");
         Container.RegisterController<OwnerController>(OwnerController);
         Container.RegisterController<MapNodeController>(MapNodeController);
         Container.RegisterController<CityNodeController>(CityNodeController);
@@ -147,7 +193,10 @@ public class GameSceneManagerBase : SceneManager {
         Container.RegisterController<UnitController>(UnitController);
         Container.RegisterController<CityCellController>(CityCellController);
         Container.RegisterController<EntityController>(EntityController);
+        Container.RegisterController<MapController>(MapController);
+        Container.RegisterController<ActionController>(ActionController);
         this.Container.InjectAll();
+        MapController.Initialize(MapInstance);
     }
     
     public override void Initialize() {

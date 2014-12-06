@@ -18,6 +18,7 @@ using UnityEngine;
 
 public abstract class OwnerControllerBase : Controller {
     
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject] public MapNodeController MapNodeController {get;set;}
     [Inject] public UnitController UnitController {get;set;}
     public abstract void InitializeOwner(OwnerViewModel owner);
@@ -37,6 +38,8 @@ public abstract class OwnerControllerBase : Controller {
 
 public abstract class MapNodeControllerBase : EntityController {
     
+    [Inject] public MapNodeController MapNodeController {get;set;}
+    [Inject] public MapController MapController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
     public abstract void InitializeMapNode(MapNodeViewModel mapNode);
     
@@ -113,6 +116,7 @@ public abstract class UnitControllerBase : EntityController {
 
 public abstract class CityCellControllerBase : Controller {
     
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject] public CityNodeController CityNodeController {get;set;}
     [Inject] public UnitController UnitController {get;set;}
     public abstract void InitializeCityCell(CityCellViewModel cityCell);
@@ -132,6 +136,8 @@ public abstract class CityCellControllerBase : Controller {
 
 public abstract class EntityControllerBase : Controller {
     
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
+    [Inject] public ActionController ActionController {get;set;}
     public abstract void InitializeEntity(EntityViewModel entity);
     
     public override ViewModel CreateEmpty() {
@@ -147,5 +153,46 @@ public abstract class EntityControllerBase : Controller {
     }
     
     public virtual void TakeDamage(EntityViewModel entity, Int32 arg) {
+    }
+}
+
+public abstract class MapControllerBase : Controller {
+    
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
+    [Inject] public MapNodeController MapNodeController {get;set;}
+    public abstract void InitializeMap(MapViewModel map);
+    
+    public override ViewModel CreateEmpty() {
+        return new MapViewModel(this);
+    }
+    
+    public virtual MapViewModel CreateMap() {
+        return ((MapViewModel)(this.Create()));
+    }
+    
+    public override void Initialize(ViewModel viewModel) {
+        this.InitializeMap(((MapViewModel)(viewModel)));
+    }
+}
+
+public abstract class ActionControllerBase : Controller {
+    
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
+    [Inject] public EntityController EntityController {get;set;}
+    public abstract void InitializeAction(ActionViewModel action);
+    
+    public override ViewModel CreateEmpty() {
+        return new ActionViewModel(this);
+    }
+    
+    public virtual ActionViewModel CreateAction() {
+        return ((ActionViewModel)(this.Create()));
+    }
+    
+    public override void Initialize(ViewModel viewModel) {
+        this.InitializeAction(((ActionViewModel)(viewModel)));
+    }
+    
+    public virtual void Excecute(ActionViewModel action) {
     }
 }

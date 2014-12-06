@@ -211,6 +211,10 @@ public abstract class EntityViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Int32 _defence;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _attackDelay;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(EntityViewModel);
@@ -234,9 +238,78 @@ public abstract class EntityViewBase : ViewBase {
         EntityViewModel entity = ((EntityViewModel)(viewModel));
         entity.attack = this._attack;
         entity.defence = this._defence;
+        entity.attackDelay = this._attackDelay == null ? null : this._attackDelay.ViewModelObject as ActionViewModel;
     }
     
     public virtual void ExecuteTakeDamage(Int32 arg) {
         this.ExecuteCommand(Entity.TakeDamage, arg);
+    }
+}
+
+[DiagramInfoAttribute("Game")]
+public abstract class MapViewBase : ViewBase {
+    
+    public override string DefaultIdentifier {
+        get {
+            return "MapInstance";
+        }
+    }
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(MapViewModel);
+        }
+    }
+    
+    public MapViewModel Map {
+        get {
+            return ((MapViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<MapController>());
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+    }
+}
+
+[DiagramInfoAttribute("Game")]
+public abstract class ActionViewBase : ViewBase {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Single _delay;
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(ActionViewModel);
+        }
+    }
+    
+    public ActionViewModel Action {
+        get {
+            return ((ActionViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<ActionController>());
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        ActionViewModel action = ((ActionViewModel)(viewModel));
+        action.delay = this._delay;
+    }
+    
+    public virtual void ExecuteExcecute() {
+        this.ExecuteCommand(Action.Excecute);
     }
 }
