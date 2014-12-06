@@ -26,7 +26,7 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
         NeighborInfo newInfo = new NeighborInfo();
 
         newInfo.link = newLink;
-        newInfo.
+        //newInfo.
 
     }
 

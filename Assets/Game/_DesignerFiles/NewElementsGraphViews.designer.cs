@@ -488,21 +488,30 @@ public class UnitViewViewBase : UnitViewBase {
 public partial class UnitView : UnitViewViewBase {
 }
 
-public class AttackDefenseViewViewBase : EntityViewBase {
+public class MapNodeViewViewBase : EntityView {
     
-    public override ViewModel CreateModel() {
-        return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _owner;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Boolean _isVisible;
+    
+    public MapNodeViewModel MapNode {
+        get {
+            return ((MapNodeViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
     }
     
-    public override void Bind() {
-        base.Bind();
+    public override System.Type ViewModelType {
+        get {
+            return typeof(MapNodeViewModel);
+        }
     }
-}
-
-public partial class AttackDefenseView : AttackDefenseViewViewBase {
-}
-
-public class MapNodeViewViewBase : MapNodeViewBase {
     
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<MapNodeController>());
@@ -510,6 +519,13 @@ public class MapNodeViewViewBase : MapNodeViewBase {
     
     public override void Bind() {
         base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
+        MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
+        mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
+        mapNode.isVisible = this._isVisible;
     }
 }
 
@@ -547,4 +563,18 @@ public class CaveNodeViewViewBase : MapNodeView {
 }
 
 public partial class CaveNodeView : CaveNodeViewViewBase {
+}
+
+public class EntityViewViewBase : EntityViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class EntityView : EntityViewViewBase {
 }
