@@ -946,3 +946,74 @@ public partial class LinkViewModel : LinkViewModelBase {
         base.FillCommands(list);;
     }
 }
+
+[DiagramInfoAttribute("Game")]
+public class SettingsViewModelBase : ViewModel {
+    
+    public P<Single> _speedProperty;
+    
+    public SettingsViewModelBase(SettingsControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public SettingsViewModelBase() : 
+            base() {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        _speedProperty = new P<Single>(this, "speed");
+    }
+}
+
+public partial class SettingsViewModel : SettingsViewModelBase {
+    
+    public SettingsViewModel(SettingsControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public SettingsViewModel() : 
+            base() {
+    }
+    
+    public virtual P<Single> speedProperty {
+        get {
+            return this._speedProperty;
+        }
+    }
+    
+    public virtual Single speed {
+        get {
+            return _speedProperty.Value;
+        }
+        set {
+            _speedProperty.Value = value;
+        }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+    }
+    
+    public override void Write(ISerializerStream stream) {
+		base.Write(stream);
+        stream.SerializeFloat("speed", this.speed);
+    }
+    
+    public override void Read(ISerializerStream stream) {
+		base.Read(stream);
+        		this.speed = stream.DeserializeFloat("speed");;
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_speedProperty, false, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
+    }
+}

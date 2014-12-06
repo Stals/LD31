@@ -26,6 +26,8 @@ public sealed partial class GameSceneManagerSettings {
 // </summary>
 public class GameSceneManagerBase : SceneManager {
     
+    private SettingsViewModel _GameSettings;
+    
     private MapViewModel _MapInstance;
     
     private OwnerController _OwnerController;
@@ -48,7 +50,22 @@ public class GameSceneManagerBase : SceneManager {
     
     private LinkController _LinkController;
     
+    private SettingsController _SettingsController;
+    
     public GameSceneManagerSettings _GameSceneManagerSettings = new GameSceneManagerSettings();
+    
+    [Inject("GameSettings")]
+    public virtual SettingsViewModel GameSettings {
+        get {
+            if ((this._GameSettings == null)) {
+                this._GameSettings = CreateInstanceViewModel<SettingsViewModel>(SettingsController, "GameSettings");
+            }
+            return this._GameSettings;
+        }
+        set {
+            _GameSettings = value;
+        }
+    }
     
     [Inject("MapInstance")]
     public virtual MapViewModel MapInstance {
@@ -193,6 +210,19 @@ public class GameSceneManagerBase : SceneManager {
         }
     }
     
+    [Inject()]
+    public virtual SettingsController SettingsController {
+        get {
+            if ((this._SettingsController == null)) {
+                this._SettingsController = new SettingsController() { Container = Container };
+            }
+            return this._SettingsController;
+        }
+        set {
+            _SettingsController = value;
+        }
+    }
+    
     // <summary>
     // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
     // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
@@ -200,6 +230,7 @@ public class GameSceneManagerBase : SceneManager {
     // </summary>
     public override void Setup() {
         base.Setup();
+        Container.RegisterViewModel<SettingsViewModel>(GameSettings,"GameSettings");
         Container.RegisterViewModel<MapViewModel>(MapInstance,"MapInstance");
         Container.RegisterController<OwnerController>(OwnerController);
         Container.RegisterController<MapNodeController>(MapNodeController);
@@ -211,7 +242,9 @@ public class GameSceneManagerBase : SceneManager {
         Container.RegisterController<MapController>(MapController);
         Container.RegisterController<ActionController>(ActionController);
         Container.RegisterController<LinkController>(LinkController);
+        Container.RegisterController<SettingsController>(SettingsController);
         this.Container.InjectAll();
+        SettingsController.Initialize(GameSettings);
         MapController.Initialize(MapInstance);
     }
     

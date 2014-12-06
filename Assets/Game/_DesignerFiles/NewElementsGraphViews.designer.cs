@@ -355,3 +355,41 @@ public abstract class LinkViewBase : ViewBase {
         link.node2 = this._node2 == null ? null : this._node2.ViewModelObject as MapNodeViewModel;
     }
 }
+
+[DiagramInfoAttribute("Game")]
+public abstract class SettingsViewBase : ViewBase {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Single _speed;
+    
+    public override string DefaultIdentifier {
+        get {
+            return "GameSettings";
+        }
+    }
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(SettingsViewModel);
+        }
+    }
+    
+    public SettingsViewModel Settings {
+        get {
+            return ((SettingsViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<SettingsController>());
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        SettingsViewModel settings = ((SettingsViewModel)(viewModel));
+        settings.speed = this._speed;
+    }
+}
