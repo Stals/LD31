@@ -250,6 +250,10 @@ public abstract class EntityViewBase : ViewBase {
         entity.defence = this._defence;
         entity.attackDelay = this._attackDelay == null ? null : this._attackDelay.ViewModelObject as ActionViewModel;
     }
+    
+    public virtual void ExecuteTakeDamage(Int32 arg) {
+        this.ExecuteCommand(Entity.TakeDamage, arg);
+    }
 }
 
 [DiagramInfoAttribute("Game")]

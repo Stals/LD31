@@ -11,11 +11,11 @@ public class EntityController : EntityControllerBase {
     public override void InitializeEntity(EntityViewModel entity) {
     }
 
-	/*
+
 	public override void TakeDamage (EntityViewModel entity, int arg)
 	{
 		base.TakeDamage (entity, arg);
 
 		entity.defence -= arg;
-	}*/
+	}
 }

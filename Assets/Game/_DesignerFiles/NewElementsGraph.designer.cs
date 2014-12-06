@@ -563,6 +563,8 @@ public class EntityViewModelBase : ViewModel {
     
     public P<ActionViewModel> _attackDelayProperty;
     
+    protected CommandWithSenderAndArgument<EntityViewModel, Int32> _TakeDamage;
+    
     public EntityViewModelBase(EntityControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -635,7 +637,18 @@ public partial class EntityViewModel : EntityViewModelBase {
         }
     }
     
+    public virtual CommandWithSenderAndArgument<EntityViewModel, Int32> TakeDamage {
+        get {
+            return _TakeDamage;
+        }
+        set {
+            _TakeDamage = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
+        var entity = controller as EntityControllerBase;
+        this.TakeDamage = new CommandWithSenderAndArgument<EntityViewModel, Int32>(this, entity.TakeDamage);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -665,6 +678,7 @@ public partial class EntityViewModel : EntityViewModelBase {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("TakeDamage", TakeDamage) { ParameterType = typeof(Int32) });
     }
 }
 
