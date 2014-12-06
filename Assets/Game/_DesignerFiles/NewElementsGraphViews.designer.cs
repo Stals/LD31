@@ -147,6 +147,10 @@ public abstract class UnitViewBase : EntityViewBase {
     [UnityEngine.HideInInspector()]
     public ViewBase _owner;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public UnitState _state;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(UnitViewModel);
@@ -170,6 +174,7 @@ public abstract class UnitViewBase : EntityViewBase {
         base.InitializeViewModel(viewModel);
         UnitViewModel unit = ((UnitViewModel)(viewModel));
         unit.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
+        unit.state = this._state;
     }
 }
 
