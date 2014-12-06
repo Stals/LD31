@@ -7,7 +7,9 @@ using UnityEngine;
 
 
 public class MapNodeController : MapNodeControllerBase {
-    
-    public override void InitializeMapNode(MapNodeViewModel mapNode) {
+
+    public override void InitializeMapNode(MapNodeViewModel mapNode)
+    {
+        MapInstance.AddMapNode(mapNode);
     }
 }

@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class LinkController : LinkControllerBase {
     
-    public override void InitializeLink(LinkViewModel link) {
+    public override void InitializeLink(LinkViewModel link) 
+    {
+
     }
 }
