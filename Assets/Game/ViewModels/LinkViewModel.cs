@@ -13,10 +13,11 @@ public partial class LinkViewModel {
     MapNodeViewModel first;
     MapNodeViewModel second;
 
-    public void Initialize(PathManager myPath, MapNodeViewModel first, MapNodeViewModel second)
+    public void Initialize(PathManager inPath, MapNodeViewModel first, MapNodeViewModel second)
     {
         first.AddNeighbor(this, second);
         second.AddNeighbor(this, first);
+        myPath = inPath;
     }
 
     public float GetPathLength
@@ -29,9 +30,9 @@ public partial class LinkViewModel {
             }
 
             float dist = 0;
-            for (int i = 1; i < myPath.waypoints.Length; ++i)
+            for (int i = 0; i < myPath.waypoints.Length - 1; ++i)
             {
-                dist += (myPath.waypoints[i].position - myPath.waypoints[i - 1].position).magnitude;
+                dist += (myPath.waypoints[i + 1].position - myPath.waypoints[i].position).magnitude;
 
             }
 
