@@ -412,3 +412,17 @@ public class CityNodeViewViewBase : CityNodeViewBase {
 
 public partial class CityNodeView : CityNodeViewViewBase {
 }
+
+public class SettingsViewViewBase : SettingsViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<SettingsController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class SettingsView : SettingsViewViewBase {
+}
