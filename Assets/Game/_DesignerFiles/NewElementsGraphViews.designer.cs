@@ -23,6 +23,10 @@ public abstract class OwnerViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Vector3 _color;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _money;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(OwnerViewModel);
@@ -45,6 +49,7 @@ public abstract class OwnerViewBase : ViewBase {
     protected override void InitializeViewModel(ViewModel viewModel) {
         OwnerViewModel owner = ((OwnerViewModel)(viewModel));
         owner.color = this._color;
+        owner.money = this._money;
     }
 }
 
@@ -617,4 +622,44 @@ public class EntityViewViewBase : EntityViewBase {
 }
 
 public partial class EntityView : EntityViewViewBase {
+}
+
+public class OwnerViewViewBase : OwnerViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<OwnerController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class OwnerView : OwnerViewViewBase {
+}
+
+public class TopPanelViewViewBase : OwnerViewBase {
+    
+    [UFToggleGroup("money")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("moneyChanged")]
+    public bool _Bindmoney = true;
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<OwnerController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void moneyChanged(Int32 value) {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        if (this._Bindmoney) {
+            this.BindProperty(Owner._moneyProperty, this.moneyChanged);
+        }
+    }
+}
+
+public partial class TopPanelView : TopPanelViewViewBase {
 }

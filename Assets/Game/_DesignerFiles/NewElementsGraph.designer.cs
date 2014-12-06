@@ -10,6 +10,8 @@ public class OwnerViewModelBase : ViewModel {
     
     public P<Vector3> _colorProperty;
     
+    public P<Int32> _moneyProperty;
+    
     public OwnerViewModelBase(OwnerControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -21,6 +23,7 @@ public class OwnerViewModelBase : ViewModel {
     public override void Bind() {
         base.Bind();
         _colorProperty = new P<Vector3>(this, "color");
+        _moneyProperty = new P<Int32>(this, "money");
     }
 }
 
@@ -53,6 +56,21 @@ public partial class OwnerViewModel : OwnerViewModelBase {
         }
     }
     
+    public virtual P<Int32> moneyProperty {
+        get {
+            return this._moneyProperty;
+        }
+    }
+    
+    public virtual Int32 money {
+        get {
+            return _moneyProperty.Value;
+        }
+        set {
+            _moneyProperty.Value = value;
+        }
+    }
+    
     public virtual MapNodeViewModel ParentMapNode {
         get {
             return this._ParentMapNode;
@@ -77,11 +95,13 @@ public partial class OwnerViewModel : OwnerViewModelBase {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
         stream.SerializeVector3("color", this.color);
+        stream.SerializeInt("money", this.money);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
         		this.color = stream.DeserializeVector3("color");;
+        		this.money = stream.DeserializeInt("money");;
     }
     
     public override void Unbind() {
@@ -91,6 +111,7 @@ public partial class OwnerViewModel : OwnerViewModelBase {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_colorProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_moneyProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
