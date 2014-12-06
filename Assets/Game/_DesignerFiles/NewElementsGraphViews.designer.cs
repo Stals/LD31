@@ -399,7 +399,22 @@ public abstract class SettingsViewBase : ViewBase {
     }
 }
 
-public class CityNodeViewViewBase : CityNodeViewBase {
+public class CityNodeViewViewBase : MapNodeView {
+    
+    public CityNodeViewModel CityNode {
+        get {
+            return ((CityNodeViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(CityNodeViewModel);
+        }
+    }
     
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<CityNodeController>());
@@ -407,6 +422,10 @@ public class CityNodeViewViewBase : CityNodeViewBase {
     
     public override void Bind() {
         base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
     }
 }
 
@@ -481,4 +500,51 @@ public class AttackDefenseViewViewBase : EntityViewBase {
 }
 
 public partial class AttackDefenseView : AttackDefenseViewViewBase {
+}
+
+public class MapNodeViewViewBase : MapNodeViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<MapNodeController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class MapNodeView : MapNodeViewViewBase {
+}
+
+public class CaveNodeViewViewBase : MapNodeView {
+    
+    public CaveNodeViewModel CaveNode {
+        get {
+            return ((CaveNodeViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(CaveNodeViewModel);
+        }
+    }
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<CaveNodeController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
+    }
+}
+
+public partial class CaveNodeView : CaveNodeViewViewBase {
 }
