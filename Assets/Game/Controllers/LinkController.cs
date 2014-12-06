@@ -6,8 +6,8 @@ using UniRx;
 using UnityEngine;
 
 
-public class PathController : PathControllerBase {
+public class LinkController : LinkControllerBase {
     
-    public override void InitializePath(PathViewModel path) {
+    public override void InitializeLink(LinkViewModel link) {
     }
 }

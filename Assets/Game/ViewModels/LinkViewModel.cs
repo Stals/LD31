@@ -5,5 +5,5 @@ using System.Linq;
 using UnityEngine;
 
 
-public partial class PathViewModel {
+public partial class LinkViewModel {
 }

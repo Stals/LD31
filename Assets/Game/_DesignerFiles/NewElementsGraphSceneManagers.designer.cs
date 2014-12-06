@@ -46,7 +46,7 @@ public class GameSceneManagerBase : SceneManager {
     
     private ActionController _ActionController;
     
-    private PathController _PathController;
+    private LinkController _LinkController;
     
     public GameSceneManagerSettings _GameSceneManagerSettings = new GameSceneManagerSettings();
     
@@ -181,15 +181,15 @@ public class GameSceneManagerBase : SceneManager {
     }
     
     [Inject()]
-    public virtual PathController PathController {
+    public virtual LinkController LinkController {
         get {
-            if ((this._PathController == null)) {
-                this._PathController = new PathController() { Container = Container };
+            if ((this._LinkController == null)) {
+                this._LinkController = new LinkController() { Container = Container };
             }
-            return this._PathController;
+            return this._LinkController;
         }
         set {
-            _PathController = value;
+            _LinkController = value;
         }
     }
     
@@ -210,7 +210,7 @@ public class GameSceneManagerBase : SceneManager {
         Container.RegisterController<EntityController>(EntityController);
         Container.RegisterController<MapController>(MapController);
         Container.RegisterController<ActionController>(ActionController);
-        Container.RegisterController<PathController>(PathController);
+        Container.RegisterController<LinkController>(LinkController);
         this.Container.InjectAll();
         MapController.Initialize(MapInstance);
     }

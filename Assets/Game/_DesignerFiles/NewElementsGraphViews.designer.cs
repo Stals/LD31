@@ -320,7 +320,7 @@ public abstract class ActionViewBase : ViewBase {
 }
 
 [DiagramInfoAttribute("Game")]
-public abstract class PathViewBase : ViewBase {
+public abstract class LinkViewBase : ViewBase {
     
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
@@ -332,13 +332,13 @@ public abstract class PathViewBase : ViewBase {
     
     public override System.Type ViewModelType {
         get {
-            return typeof(PathViewModel);
+            return typeof(LinkViewModel);
         }
     }
     
-    public PathViewModel Path {
+    public LinkViewModel Link {
         get {
-            return ((PathViewModel)(this.ViewModelObject));
+            return ((LinkViewModel)(this.ViewModelObject));
         }
         set {
             this.ViewModelObject = value;
@@ -346,12 +346,12 @@ public abstract class PathViewBase : ViewBase {
     }
     
     public override ViewModel CreateModel() {
-        return this.RequestViewModel(GameManager.Container.Resolve<PathController>());
+        return this.RequestViewModel(GameManager.Container.Resolve<LinkController>());
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
-        PathViewModel path = ((PathViewModel)(viewModel));
-        path.node1 = this._node1 == null ? null : this._node1.ViewModelObject as MapNodeViewModel;
-        path.node2 = this._node2 == null ? null : this._node2.ViewModelObject as MapNodeViewModel;
+        LinkViewModel link = ((LinkViewModel)(viewModel));
+        link.node1 = this._node1 == null ? null : this._node1.ViewModelObject as MapNodeViewModel;
+        link.node2 = this._node2 == null ? null : this._node2.ViewModelObject as MapNodeViewModel;
     }
 }

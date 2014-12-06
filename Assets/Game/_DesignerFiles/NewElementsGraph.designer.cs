@@ -115,7 +115,7 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public P<Boolean> _isVisibleProperty;
     
-    public ModelCollection<PathViewModel> _connectionsProperty;
+    public ModelCollection<LinkViewModel> _connectionsProperty;
     
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -129,7 +129,7 @@ public class MapNodeViewModelBase : EntityViewModel {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
         _isVisibleProperty = new P<Boolean>(this, "isVisible");
-        _connectionsProperty = new ModelCollection<PathViewModel>(this, "connections");
+        _connectionsProperty = new ModelCollection<LinkViewModel>(this, "connections");
         _connectionsProperty.CollectionChanged += connectionsCollectionChanged;
     }
     
@@ -141,7 +141,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     
     private MapViewModel _ParentMap;
     
-    private PathViewModel _ParentPath;
+    private LinkViewModel _ParentLink;
     
     public MapNodeViewModel(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -182,7 +182,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
-    public virtual ModelCollection<PathViewModel> connections {
+    public virtual ModelCollection<LinkViewModel> connections {
         get {
             return this._connectionsProperty;
         }
@@ -197,12 +197,12 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
-    public virtual PathViewModel ParentPath {
+    public virtual LinkViewModel ParentLink {
         get {
-            return this._ParentPath;
+            return this._ParentLink;
         }
         set {
-            _ParentPath = value;
+            _ParentLink = value;
         }
     }
     
@@ -223,7 +223,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         		this.isVisible = stream.DeserializeBool("isVisible");;
 if (stream.DeepSerialize) {
         this.connections.Clear();
-        this.connections.AddRange(stream.DeserializeObjectArray<PathViewModel>("connections"));
+        this.connections.AddRange(stream.DeserializeObjectArray<LinkViewModel>("connections"));
 }
     }
     
@@ -244,8 +244,8 @@ if (stream.DeepSerialize) {
     }
     
     protected override void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
-        foreach (var item in args.OldItems.OfType<PathViewModel>()) item.ParentMapNode = null;;
-        foreach (var item in args.NewItems.OfType<PathViewModel>()) item.ParentMapNode = this;;
+        foreach (var item in args.OldItems.OfType<LinkViewModel>()) item.ParentMapNode = null;;
+        foreach (var item in args.NewItems.OfType<LinkViewModel>()) item.ParentMapNode = this;;
     }
 }
 
@@ -843,17 +843,17 @@ public partial class ActionViewModel : ActionViewModelBase {
 }
 
 [DiagramInfoAttribute("Game")]
-public class PathViewModelBase : ViewModel {
+public class LinkViewModelBase : ViewModel {
     
     public P<MapNodeViewModel> _node1Property;
     
     public P<MapNodeViewModel> _node2Property;
     
-    public PathViewModelBase(PathControllerBase controller, bool initialize = true) : 
+    public LinkViewModelBase(LinkControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
     
-    public PathViewModelBase() : 
+    public LinkViewModelBase() : 
             base() {
     }
     
@@ -864,15 +864,15 @@ public class PathViewModelBase : ViewModel {
     }
 }
 
-public partial class PathViewModel : PathViewModelBase {
+public partial class LinkViewModel : LinkViewModelBase {
     
     private MapNodeViewModel _ParentMapNode;
     
-    public PathViewModel(PathControllerBase controller, bool initialize = true) : 
+    public LinkViewModel(LinkControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
     
-    public PathViewModel() : 
+    public LinkViewModel() : 
             base() {
     }
     
@@ -888,7 +888,7 @@ public partial class PathViewModel : PathViewModelBase {
         }
         set {
             _node1Property.Value = value;
-            if (value != null) value.ParentPath = this;
+            if (value != null) value.ParentLink = this;
         }
     }
     
@@ -904,7 +904,7 @@ public partial class PathViewModel : PathViewModelBase {
         }
         set {
             _node2Property.Value = value;
-            if (value != null) value.ParentPath = this;
+            if (value != null) value.ParentLink = this;
         }
     }
     
