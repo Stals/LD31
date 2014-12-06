@@ -426,3 +426,17 @@ public class SettingsViewViewBase : SettingsViewBase {
 
 public partial class SettingsView : SettingsViewViewBase {
 }
+
+public class MapViewViewBase : MapViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<MapController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class MapView : MapViewViewBase {
+}
