@@ -55,6 +55,10 @@ public abstract class MapNodeViewBase : EntityViewBase {
     [UnityEngine.HideInInspector()]
     public ViewBase _owner;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Boolean _isVisible;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(MapNodeViewModel);
@@ -78,6 +82,7 @@ public abstract class MapNodeViewBase : EntityViewBase {
         base.InitializeViewModel(viewModel);
         MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
         mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
+        mapNode.isVisible = this._isVisible;
     }
 }
 

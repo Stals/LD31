@@ -113,6 +113,8 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public P<OwnerViewModel> _ownerProperty;
     
+    public P<Boolean> _isVisibleProperty;
+    
     public ModelCollection<MapNodeViewModel> _connectionsProperty;
     
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
@@ -126,6 +128,7 @@ public class MapNodeViewModelBase : EntityViewModel {
     public override void Bind() {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
+        _isVisibleProperty = new P<Boolean>(this, "isVisible");
         _connectionsProperty = new ModelCollection<MapNodeViewModel>(this, "connections");
         _connectionsProperty.CollectionChanged += connectionsCollectionChanged;
     }
@@ -164,6 +167,21 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
+    public virtual P<Boolean> isVisibleProperty {
+        get {
+            return this._isVisibleProperty;
+        }
+    }
+    
+    public virtual Boolean isVisible {
+        get {
+            return _isVisibleProperty.Value;
+        }
+        set {
+            _isVisibleProperty.Value = value;
+        }
+    }
+    
     public virtual ModelCollection<MapNodeViewModel> connections {
         get {
             return this._connectionsProperty;
@@ -195,12 +213,14 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		if (stream.DeepSerialize) stream.SerializeObject("owner", this.owner);
+        stream.SerializeBool("isVisible", this.isVisible);
         if (stream.DeepSerialize) stream.SerializeArray("connections", this.connections);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		if (stream.DeepSerialize) this.owner = stream.DeserializeObject<OwnerViewModel>("owner");
+        		this.isVisible = stream.DeserializeBool("isVisible");;
 if (stream.DeepSerialize) {
         this.connections.Clear();
         this.connections.AddRange(stream.DeserializeObjectArray<MapNodeViewModel>("connections"));
@@ -215,6 +235,7 @@ if (stream.DeepSerialize) {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_ownerProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_isVisibleProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_connectionsProperty, true, true, false));
     }
     
