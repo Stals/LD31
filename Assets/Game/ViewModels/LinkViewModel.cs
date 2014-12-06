@@ -15,9 +15,10 @@ public partial class LinkViewModel {
 
     public void Initialize(PathManager inPath, MapNodeViewModel first, MapNodeViewModel second)
     {
+        myPath = inPath;
         first.AddNeighbor(this, second);
         second.AddNeighbor(this, first);
-        myPath = inPath;
+        
     }
 
     public float GetPathLength
