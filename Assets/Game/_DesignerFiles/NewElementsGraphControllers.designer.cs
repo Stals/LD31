@@ -154,9 +154,6 @@ public abstract class EntityControllerBase : Controller {
     public override void Initialize(ViewModel viewModel) {
         this.InitializeEntity(((EntityViewModel)(viewModel)));
     }
-    
-    public virtual void TakeDamage(EntityViewModel entity, Int32 arg) {
-    }
 }
 
 public abstract class MapControllerBase : Controller {
@@ -176,6 +173,9 @@ public abstract class MapControllerBase : Controller {
     
     public override void Initialize(ViewModel viewModel) {
         this.InitializeMap(((MapViewModel)(viewModel)));
+    }
+    
+    public virtual void TestCommand(MapViewModel map) {
     }
 }
 

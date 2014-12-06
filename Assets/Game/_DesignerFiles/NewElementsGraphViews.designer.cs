@@ -250,10 +250,6 @@ public abstract class EntityViewBase : ViewBase {
         entity.defence = this._defence;
         entity.attackDelay = this._attackDelay == null ? null : this._attackDelay.ViewModelObject as ActionViewModel;
     }
-    
-    public virtual void ExecuteTakeDamage(Int32 arg) {
-        this.ExecuteCommand(Entity.TakeDamage, arg);
-    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -285,6 +281,10 @@ public abstract class MapViewBase : ViewBase {
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
+    }
+    
+    public virtual void ExecuteTestCommand() {
+        this.ExecuteCommand(Map.TestCommand);
     }
 }
 
@@ -434,12 +434,24 @@ public partial class CityNodeView : CityNodeViewViewBase {
 
 public class SettingsViewViewBase : SettingsViewBase {
     
+    [UFToggleGroup("speed")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("speedChanged")]
+    public bool _Bindspeed = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<SettingsController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void speedChanged(Single value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._Bindspeed) {
+            this.BindProperty(Settings._speedProperty, this.speedChanged);
+        }
     }
 }
 
@@ -567,12 +579,36 @@ public partial class CaveNodeView : CaveNodeViewViewBase {
 
 public class EntityViewViewBase : EntityViewBase {
     
+    [UFToggleGroup("defence")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("defenceChanged")]
+    public bool _Binddefence = true;
+    
+    [UFToggleGroup("attack")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("attackChanged")]
+    public bool _Bindattack = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void defenceChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void attackChanged(Int32 value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._Binddefence) {
+            this.BindProperty(Entity._defenceProperty, this.defenceChanged);
+        }
+        if (this._Bindattack) {
+            this.BindProperty(Entity._attackProperty, this.attackChanged);
+        }
     }
 }
 

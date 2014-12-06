@@ -201,10 +201,6 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
 		}
     }
 
-	public void setID(string newID){
-		_id = newID;
-	}
-
     public bool InjectView
     {
         get { return _InjectView; }

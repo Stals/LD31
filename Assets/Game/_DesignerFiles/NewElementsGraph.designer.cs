@@ -563,8 +563,6 @@ public class EntityViewModelBase : ViewModel {
     
     public P<ActionViewModel> _attackDelayProperty;
     
-    protected CommandWithSenderAndArgument<EntityViewModel, Int32> _TakeDamage;
-    
     public EntityViewModelBase(EntityControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -637,18 +635,7 @@ public partial class EntityViewModel : EntityViewModelBase {
         }
     }
     
-    public virtual CommandWithSenderAndArgument<EntityViewModel, Int32> TakeDamage {
-        get {
-            return _TakeDamage;
-        }
-        set {
-            _TakeDamage = value;
-        }
-    }
-    
     protected override void WireCommands(Controller controller) {
-        var entity = controller as EntityControllerBase;
-        this.TakeDamage = new CommandWithSenderAndArgument<EntityViewModel, Int32>(this, entity.TakeDamage);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -678,7 +665,6 @@ public partial class EntityViewModel : EntityViewModelBase {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
-        list.Add(new ViewModelCommandInfo("TakeDamage", TakeDamage) { ParameterType = typeof(Int32) });
     }
 }
 
@@ -686,6 +672,8 @@ public partial class EntityViewModel : EntityViewModelBase {
 public class MapViewModelBase : ViewModel {
     
     public ModelCollection<MapNodeViewModel> _nodesProperty;
+    
+    protected CommandWithSender<MapViewModel> _TestCommand;
     
     public MapViewModelBase(MapControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -721,7 +709,18 @@ public partial class MapViewModel : MapViewModelBase {
         }
     }
     
+    public virtual CommandWithSender<MapViewModel> TestCommand {
+        get {
+            return _TestCommand;
+        }
+        set {
+            _TestCommand = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
+        var map = controller as MapControllerBase;
+        this.TestCommand = new CommandWithSender<MapViewModel>(this, map.TestCommand);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -749,6 +748,7 @@ if (stream.DeepSerialize) {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("TestCommand", TestCommand) { ParameterType = typeof(void) });
     }
     
     protected override void nodesCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
