@@ -11,6 +11,6 @@ public partial class LinkView {
     public override void Awake()
     {
         base.Awake();
-        Link.Initialize(transform.GetComponent<PathManager>(), Link.node1, Link.node2);
+        Link.Initialize(transform.GetComponentInChildren<PathManager>(), Link.node1, Link.node2);
     }
 }
