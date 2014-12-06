@@ -398,3 +398,17 @@ public abstract class SettingsViewBase : ViewBase {
         settings.speed = this._speed;
     }
 }
+
+public class CityNodeViewViewBase : CityNodeViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<CityNodeController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class CityNodeView : CityNodeViewViewBase {
+}
