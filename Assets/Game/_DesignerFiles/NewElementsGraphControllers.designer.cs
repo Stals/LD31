@@ -38,8 +38,8 @@ public abstract class OwnerControllerBase : Controller {
 
 public abstract class MapNodeControllerBase : EntityController {
     
-    [Inject] public MapNodeController MapNodeController {get;set;}
     [Inject] public MapController MapController {get;set;}
+    [Inject] public PathController PathController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
     public abstract void InitializeMapNode(MapNodeViewModel mapNode);
     
@@ -194,5 +194,24 @@ public abstract class ActionControllerBase : Controller {
     }
     
     public virtual void Excecute(ActionViewModel action) {
+    }
+}
+
+public abstract class PathControllerBase : Controller {
+    
+    [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
+    [Inject] public MapNodeController MapNodeController {get;set;}
+    public abstract void InitializePath(PathViewModel path);
+    
+    public override ViewModel CreateEmpty() {
+        return new PathViewModel(this);
+    }
+    
+    public virtual PathViewModel CreatePath() {
+        return ((PathViewModel)(this.Create()));
+    }
+    
+    public override void Initialize(ViewModel viewModel) {
+        this.InitializePath(((PathViewModel)(viewModel)));
     }
 }

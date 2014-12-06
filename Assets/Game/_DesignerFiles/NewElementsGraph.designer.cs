@@ -115,7 +115,7 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public P<Boolean> _isVisibleProperty;
     
-    public ModelCollection<MapNodeViewModel> _connectionsProperty;
+    public ModelCollection<PathViewModel> _connectionsProperty;
     
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -129,7 +129,7 @@ public class MapNodeViewModelBase : EntityViewModel {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
         _isVisibleProperty = new P<Boolean>(this, "isVisible");
-        _connectionsProperty = new ModelCollection<MapNodeViewModel>(this, "connections");
+        _connectionsProperty = new ModelCollection<PathViewModel>(this, "connections");
         _connectionsProperty.CollectionChanged += connectionsCollectionChanged;
     }
     
@@ -139,9 +139,9 @@ public class MapNodeViewModelBase : EntityViewModel {
 
 public partial class MapNodeViewModel : MapNodeViewModelBase {
     
-    private MapNodeViewModel _ParentMapNode;
-    
     private MapViewModel _ParentMap;
+    
+    private PathViewModel _ParentPath;
     
     public MapNodeViewModel(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -182,18 +182,9 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
-    public virtual ModelCollection<MapNodeViewModel> connections {
+    public virtual ModelCollection<PathViewModel> connections {
         get {
             return this._connectionsProperty;
-        }
-    }
-    
-    public virtual MapNodeViewModel ParentMapNode {
-        get {
-            return this._ParentMapNode;
-        }
-        set {
-            _ParentMapNode = value;
         }
     }
     
@@ -203,6 +194,15 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
         set {
             _ParentMap = value;
+        }
+    }
+    
+    public virtual PathViewModel ParentPath {
+        get {
+            return this._ParentPath;
+        }
+        set {
+            _ParentPath = value;
         }
     }
     
@@ -223,7 +223,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         		this.isVisible = stream.DeserializeBool("isVisible");;
 if (stream.DeepSerialize) {
         this.connections.Clear();
-        this.connections.AddRange(stream.DeserializeObjectArray<MapNodeViewModel>("connections"));
+        this.connections.AddRange(stream.DeserializeObjectArray<PathViewModel>("connections"));
 }
     }
     
@@ -244,8 +244,8 @@ if (stream.DeepSerialize) {
     }
     
     protected override void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
-        foreach (var item in args.OldItems.OfType<MapNodeViewModel>()) item.ParentMapNode = null;;
-        foreach (var item in args.NewItems.OfType<MapNodeViewModel>()) item.ParentMapNode = this;;
+        foreach (var item in args.OldItems.OfType<PathViewModel>()) item.ParentMapNode = null;;
+        foreach (var item in args.NewItems.OfType<PathViewModel>()) item.ParentMapNode = this;;
     }
 }
 
@@ -839,5 +839,110 @@ public partial class ActionViewModel : ActionViewModelBase {
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
         list.Add(new ViewModelCommandInfo("Excecute", Excecute) { ParameterType = typeof(void) });
+    }
+}
+
+[DiagramInfoAttribute("Game")]
+public class PathViewModelBase : ViewModel {
+    
+    public P<MapNodeViewModel> _node1Property;
+    
+    public P<MapNodeViewModel> _node2Property;
+    
+    public PathViewModelBase(PathControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public PathViewModelBase() : 
+            base() {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        _node1Property = new P<MapNodeViewModel>(this, "node1");
+        _node2Property = new P<MapNodeViewModel>(this, "node2");
+    }
+}
+
+public partial class PathViewModel : PathViewModelBase {
+    
+    private MapNodeViewModel _ParentMapNode;
+    
+    public PathViewModel(PathControllerBase controller, bool initialize = true) : 
+            base(controller, initialize) {
+    }
+    
+    public PathViewModel() : 
+            base() {
+    }
+    
+    public virtual P<MapNodeViewModel> node1Property {
+        get {
+            return this._node1Property;
+        }
+    }
+    
+    public virtual MapNodeViewModel node1 {
+        get {
+            return _node1Property.Value;
+        }
+        set {
+            _node1Property.Value = value;
+            if (value != null) value.ParentPath = this;
+        }
+    }
+    
+    public virtual P<MapNodeViewModel> node2Property {
+        get {
+            return this._node2Property;
+        }
+    }
+    
+    public virtual MapNodeViewModel node2 {
+        get {
+            return _node2Property.Value;
+        }
+        set {
+            _node2Property.Value = value;
+            if (value != null) value.ParentPath = this;
+        }
+    }
+    
+    public virtual MapNodeViewModel ParentMapNode {
+        get {
+            return this._ParentMapNode;
+        }
+        set {
+            _ParentMapNode = value;
+        }
+    }
+    
+    protected override void WireCommands(Controller controller) {
+    }
+    
+    public override void Write(ISerializerStream stream) {
+		base.Write(stream);
+		if (stream.DeepSerialize) stream.SerializeObject("node1", this.node1);
+		if (stream.DeepSerialize) stream.SerializeObject("node2", this.node2);
+    }
+    
+    public override void Read(ISerializerStream stream) {
+		base.Read(stream);
+		if (stream.DeepSerialize) this.node1 = stream.DeserializeObject<MapNodeViewModel>("node1");
+		if (stream.DeepSerialize) this.node2 = stream.DeserializeObject<MapNodeViewModel>("node2");
+    }
+    
+    public override void Unbind() {
+        base.Unbind();
+    }
+    
+    protected override void FillProperties(List<ViewModelPropertyInfo> list) {
+        base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_node1Property, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_node2Property, true, false, false));
+    }
+    
+    protected override void FillCommands(List<ViewModelCommandInfo> list) {
+        base.FillCommands(list);;
     }
 }

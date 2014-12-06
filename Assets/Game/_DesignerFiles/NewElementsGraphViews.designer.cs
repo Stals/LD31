@@ -318,3 +318,40 @@ public abstract class ActionViewBase : ViewBase {
         this.ExecuteCommand(Action.Excecute);
     }
 }
+
+[DiagramInfoAttribute("Game")]
+public abstract class PathViewBase : ViewBase {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _node1;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _node2;
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(PathViewModel);
+        }
+    }
+    
+    public PathViewModel Path {
+        get {
+            return ((PathViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<PathController>());
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        PathViewModel path = ((PathViewModel)(viewModel));
+        path.node1 = this._node1 == null ? null : this._node1.ViewModelObject as MapNodeViewModel;
+        path.node2 = this._node2 == null ? null : this._node2.ViewModelObject as MapNodeViewModel;
+    }
+}

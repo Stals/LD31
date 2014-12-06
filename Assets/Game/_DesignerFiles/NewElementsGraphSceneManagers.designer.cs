@@ -46,6 +46,8 @@ public class GameSceneManagerBase : SceneManager {
     
     private ActionController _ActionController;
     
+    private PathController _PathController;
+    
     public GameSceneManagerSettings _GameSceneManagerSettings = new GameSceneManagerSettings();
     
     [Inject("MapInstance")]
@@ -178,6 +180,19 @@ public class GameSceneManagerBase : SceneManager {
         }
     }
     
+    [Inject()]
+    public virtual PathController PathController {
+        get {
+            if ((this._PathController == null)) {
+                this._PathController = new PathController() { Container = Container };
+            }
+            return this._PathController;
+        }
+        set {
+            _PathController = value;
+        }
+    }
+    
     // <summary>
     // This method is the first method to be invoked when the scene first loads. Anything registered here with 'Container' will effectively 
     // be injected on controllers, and instances defined on a subsystem.And example of this would be Container.RegisterInstance<IDataRepository>(new CodeRepository()). Then any property with 
@@ -195,6 +210,7 @@ public class GameSceneManagerBase : SceneManager {
         Container.RegisterController<EntityController>(EntityController);
         Container.RegisterController<MapController>(MapController);
         Container.RegisterController<ActionController>(ActionController);
+        Container.RegisterController<PathController>(PathController);
         this.Container.InjectAll();
         MapController.Initialize(MapInstance);
     }
