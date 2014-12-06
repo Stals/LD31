@@ -468,3 +468,17 @@ public class UnitViewViewBase : UnitViewBase {
 
 public partial class UnitView : UnitViewViewBase {
 }
+
+public class AttackDefenseViewViewBase : EntityViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class AttackDefenseView : AttackDefenseViewViewBase {
+}
