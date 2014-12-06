@@ -440,3 +440,17 @@ public class MapViewViewBase : MapViewBase {
 
 public partial class MapView : MapViewViewBase {
 }
+
+public class LinkViewViewBase : LinkViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<LinkController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class LinkView : LinkViewViewBase {
+}
