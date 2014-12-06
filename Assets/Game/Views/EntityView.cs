@@ -19,21 +19,24 @@ public partial class EntityView {
 	public override void defenceChanged(Int32 value) {
 		adView.defenseLabel.text = value.ToString ();
 	}
-
-	SpawnFollowingUI ui;
+	
 	public AttackDefenseView adView;
 
 
+	[SerializeField]
+	SpawnFollowingUI attackDefenseUI;
+	
 	public override void Awake ()
 	{
 		base.Awake ();
 
-		ui = GetComponent<SpawnFollowingUI> ();
-		ui.createPrefab ();
-		adView = ui.guiObject.GetComponent<AttackDefenseView> ();
-		
-		adView.attackLabel.text = Entity.attack.ToString ();
-		adView.defenseLabel.text = Entity.defence.ToString ();
+		setupAttackDefense ();
 	}
 
+	void setupAttackDefense()
+	{
+		attackDefenseUI = GetComponent<SpawnFollowingUI> ();
+		attackDefenseUI.createPrefab ();
+		adView = attackDefenseUI.guiObject.GetComponent<AttackDefenseView> ();
+	}
 }

@@ -7,5 +7,11 @@ using UniRx;
 
 
 public partial class CityNodeView {
+	[SerializeField]
+	SpawnFollowingUI gridUI;
 	
+	void setupCells()
+	{
+		
+	}
 }
