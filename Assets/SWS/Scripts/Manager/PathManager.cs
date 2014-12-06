@@ -119,7 +119,7 @@ public class PathManager : MonoBehaviour
     //http://code.google.com/p/hotween/source/browse/trunk/Holoville/HOTween/Core/Path.cs
     // Gets the point on the curve at the given percentage (0 to 1).
     // t: The percentage (0 to 1) at which to get the point.
-    private Vector3 GetPoint(float t)
+    public Vector3 GetPoint(float t)
     {
         int numSections = points.Length - 3;
         int tSec = (int)Math.Floor(t * numSections);

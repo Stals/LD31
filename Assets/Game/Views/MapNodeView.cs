@@ -7,4 +7,6 @@ using UniRx;
 
 
 public partial class MapNodeView {
+
+
 }

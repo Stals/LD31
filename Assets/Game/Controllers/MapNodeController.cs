@@ -10,6 +10,6 @@ public class MapNodeController : MapNodeControllerBase {
 
     public override void InitializeMapNode(MapNodeViewModel mapNode)
     {
-        MapInstance.AddMapNode(mapNode);
+        GraphManager.Instance.AddMapNode(mapNode);
     }
 }

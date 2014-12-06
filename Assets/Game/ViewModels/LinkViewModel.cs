@@ -41,4 +41,9 @@ public partial class LinkViewModel {
 
         }
     }
+
+    public PathManager MyPath
+    {
+        get { return myPath; }
+    }
 }

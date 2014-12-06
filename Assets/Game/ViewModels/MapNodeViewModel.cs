@@ -19,6 +19,7 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
 
     List<NeighborInfo> allNeighbors = new List<NeighborInfo>();
 
+    int indexInMap;
 
 
     public void AddNeighbor(LinkViewModel newLink, MapNodeViewModel mapViewModel)
@@ -26,36 +27,39 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
         NeighborInfo newInfo = new NeighborInfo();
 
         newInfo.link = newLink;
-        newInfo.
+        newInfo.neighbor = mapViewModel;
+        newInfo.distance = newLink.GetPathLength;
 
+        allNeighbors.Add(newInfo);
     }
 
     #region IWeightGraphRealization
-    int IWeightGraphElement.MyIndex
+
+    public int MyIndex
     {
         get
         {
-            throw new NotImplementedException();
+            return indexInMap;
         }
         set
         {
-            throw new NotImplementedException();
+            indexInMap = value;
         }
     }
 
-    int IWeightGraphElement.NumberOfNeighbors
+    public int NumberOfNeighbors
     {
-        get { throw new NotImplementedException(); }
+        get { return allNeighbors.Count; }
     }
 
-    IWeightGraphElement IWeightGraphElement.MyNeighbor(int ind)
+    public IWeightGraphElement MyNeighbor(int ind)
     {
-        throw new NotImplementedException();
+        return allNeighbors[ind].neighbor;
     }
 
-    float IWeightGraphElement.MyNeighborDistance(int ind)
+    public float MyNeighborDistance(int ind)
     {
-        throw new NotImplementedException();
+        return allNeighbors[ind].distance;
     }
 
     #endregion
