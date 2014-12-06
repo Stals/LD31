@@ -23,6 +23,10 @@ public abstract class OwnerViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Vector3 _color;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _money;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(OwnerViewModel);
@@ -45,6 +49,7 @@ public abstract class OwnerViewBase : ViewBase {
     protected override void InitializeViewModel(ViewModel viewModel) {
         OwnerViewModel owner = ((OwnerViewModel)(viewModel));
         owner.color = this._color;
+        owner.money = this._money;
     }
 }
 
@@ -89,6 +94,10 @@ public abstract class MapNodeViewBase : EntityViewBase {
 [DiagramInfoAttribute("Game")]
 public abstract class CityNodeViewBase : MapNodeViewBase {
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _maxCells;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CityNodeViewModel);
@@ -110,6 +119,8 @@ public abstract class CityNodeViewBase : MapNodeViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
+        cityNode.maxCells = this._maxCells;
     }
 }
 
@@ -286,6 +297,10 @@ public abstract class MapViewBase : ViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
     }
+    
+    public virtual void ExecuteTestCommand() {
+        this.ExecuteCommand(Map.TestCommand);
+    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -401,6 +416,15 @@ public abstract class SettingsViewBase : ViewBase {
 
 public class CityNodeViewViewBase : MapNodeView {
     
+    [UFToggleGroup("maxCells")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("maxCellsChanged")]
+    public bool _BindmaxCells = true;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _maxCells;
+    
     public CityNodeViewModel CityNode {
         get {
             return ((CityNodeViewModel)(this.ViewModelObject));
@@ -420,12 +444,21 @@ public class CityNodeViewViewBase : MapNodeView {
         return this.RequestViewModel(GameManager.Container.Resolve<CityNodeController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void maxCellsChanged(Int32 value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._BindmaxCells) {
+            this.BindProperty(CityNode._maxCellsProperty, this.maxCellsChanged);
+        }
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
+        cityNode.maxCells = this._maxCells;
     }
 }
 
@@ -434,12 +467,24 @@ public partial class CityNodeView : CityNodeViewViewBase {
 
 public class SettingsViewViewBase : SettingsViewBase {
     
+    [UFToggleGroup("speed")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("speedChanged")]
+    public bool _Bindspeed = true;
+    
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<SettingsController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void speedChanged(Single value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._Bindspeed) {
+            this.BindProperty(Settings._speedProperty, this.speedChanged);
+        }
     }
 }
 
@@ -488,21 +533,30 @@ public class UnitViewViewBase : UnitViewBase {
 public partial class UnitView : UnitViewViewBase {
 }
 
-public class AttackDefenseViewViewBase : EntityViewBase {
+public class MapNodeViewViewBase : EntityView {
     
-    public override ViewModel CreateModel() {
-        return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _owner;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Boolean _isVisible;
+    
+    public MapNodeViewModel MapNode {
+        get {
+            return ((MapNodeViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
     }
     
-    public override void Bind() {
-        base.Bind();
+    public override System.Type ViewModelType {
+        get {
+            return typeof(MapNodeViewModel);
+        }
     }
-}
-
-public partial class AttackDefenseView : AttackDefenseViewViewBase {
-}
-
-public class MapNodeViewViewBase : MapNodeViewBase {
     
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<MapNodeController>());
@@ -510,6 +564,13 @@ public class MapNodeViewViewBase : MapNodeViewBase {
     
     public override void Bind() {
         base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
+        MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
+        mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
+        mapNode.isVisible = this._isVisible;
     }
 }
 
@@ -547,4 +608,96 @@ public class CaveNodeViewViewBase : MapNodeView {
 }
 
 public partial class CaveNodeView : CaveNodeViewViewBase {
+}
+
+public class EntityViewViewBase : EntityViewBase {
+    
+    [UFToggleGroup("defence")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("defenceChanged")]
+    public bool _Binddefence = true;
+    
+    [UFToggleGroup("attack")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("attackChanged")]
+    public bool _Bindattack = true;
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<EntityController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void defenceChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void attackChanged(Int32 value) {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        if (this._Binddefence) {
+            this.BindProperty(Entity._defenceProperty, this.defenceChanged);
+        }
+        if (this._Bindattack) {
+            this.BindProperty(Entity._attackProperty, this.attackChanged);
+        }
+    }
+}
+
+public partial class EntityView : EntityViewViewBase {
+}
+
+public class OwnerViewViewBase : OwnerViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<OwnerController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class OwnerView : OwnerViewViewBase {
+}
+
+public class TopPanelViewViewBase : OwnerViewBase {
+    
+    [UFToggleGroup("money")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("moneyChanged")]
+    public bool _Bindmoney = true;
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<OwnerController>());
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void moneyChanged(Int32 value) {
+    }
+    
+    public override void Bind() {
+        base.Bind();
+        if (this._Bindmoney) {
+            this.BindProperty(Owner._moneyProperty, this.moneyChanged);
+        }
+    }
+}
+
+public partial class TopPanelView : TopPanelViewViewBase {
+}
+
+public class CityCellViewViewBase : CityCellViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<CityCellController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class CityCellView : CityCellViewViewBase {
 }

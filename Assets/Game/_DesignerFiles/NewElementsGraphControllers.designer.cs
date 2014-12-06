@@ -177,6 +177,9 @@ public abstract class MapControllerBase : Controller {
     public override void Initialize(ViewModel viewModel) {
         this.InitializeMap(((MapViewModel)(viewModel)));
     }
+    
+    public virtual void TestCommand(MapViewModel map) {
+    }
 }
 
 public abstract class ActionControllerBase : Controller {

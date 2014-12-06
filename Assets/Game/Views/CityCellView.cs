@@ -6,10 +6,5 @@ using UnityEngine;
 using UniRx;
 
 
-public partial class AttackDefenseView {
-	[SerializeField]
-	UILabel attackLabel;
-
-	[SerializeField]
-	UILabel defenseLabel;
+public partial class CityCellView {
 }

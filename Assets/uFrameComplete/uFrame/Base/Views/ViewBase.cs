@@ -196,7 +196,9 @@ public abstract class ViewBase : ViewContainer, IUFSerializable, IBindable
             }
             return _id = Guid.NewGuid().ToString();
         }
-        set { _id = value; }
+        set { 
+			_id = value;
+		}
     }
 
     public bool InjectView

@@ -6,20 +6,32 @@ using UnityEngine;
 using UniRx;
 
 
-public partial class CityNodeView {
-	SpawnFollowingUI ui;
-	AttackDefenseView adView;
+public partial class CityNodeView { 
 
-	void Start()
+    /// Subscribes to the property and is notified anytime the value changes.
+    public override void maxCellsChanged(Int32 value) {
+        base.maxCellsChanged(value);
+
+		grid.cellsCountChanged (value);
+    }
+
+	[SerializeField]
+	SpawnFollowingUI gridUI;
+
+	CellsGridView grid;
+
+	public override void Awake ()
 	{
-		//CityNodeController.
+		base.Awake ();
 
-		ui = GetComponent<SpawnFollowingUI> ();
-		adView = ui.guiObject.GetComponent<AttackDefenseView> ();
-		adView.ForceResolveViewModel = true;
-
-		adView.Identifier = Identifier;
-		int i = 0;
-		//Identifier = InstanceId.ToString ();
+		setupCells ();
 	}
+
+	void setupCells()
+	{
+		gridUI.createPrefab ();
+		grid = gridUI.guiObject.GetComponent<CellsGridView>();
+	}
+
+
 }
