@@ -663,3 +663,17 @@ public class TopPanelViewViewBase : OwnerViewBase {
 
 public partial class TopPanelView : TopPanelViewViewBase {
 }
+
+public class CityCellViewViewBase : CityCellViewBase {
+    
+    public override ViewModel CreateModel() {
+        return this.RequestViewModel(GameManager.Container.Resolve<CityCellController>());
+    }
+    
+    public override void Bind() {
+        base.Bind();
+    }
+}
+
+public partial class CityCellView : CityCellViewViewBase {
+}
