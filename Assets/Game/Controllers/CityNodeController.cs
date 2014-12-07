@@ -16,6 +16,8 @@ public class CityNodeController : CityNodeControllerBase {
     {
         base.addUnit(cityNode, arg);
 
+        arg.Position = cityNode.position;
+
         arg.currentMapNode = cityNode;
 
         /*

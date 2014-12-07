@@ -183,14 +183,17 @@ public class UnitController : UnitControllerBase
 
         MapNodeViewModel nowNode;
 
+        Vector3 position;
+
         public InCityBehavior(MapNodeViewModel city)
         {
             nowNode = city;
+
         }
 
         public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
-            unit.Position = Vector3.zero;
+            //unit.Position = nowNode.position;
         }
 
         public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
