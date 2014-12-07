@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 5d8331b37d8b24d2286fdcc50f5da7e8
+guid: 55e0dc7971289034a9e1989720e6a4c7
 TextureImporter:
   fileIDToRecycleName:
-    21300000: cave_coins
+    21300000: gamemap1
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -22,13 +22,13 @@ TextureImporter:
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-  textureFormat: 5
+  textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
     filterMode: -1
-    aniso: 1
+    aniso: -1
     mipBias: -1
-    wrapMode: 1
+    wrapMode: -1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
