@@ -102,6 +102,8 @@ namespace SimpleDeixtra
                 nowElem = bestHeighbor;
                 nowWeight = minValue;
             }
+            
+            result.Reverse();
 
             return result;
         }
