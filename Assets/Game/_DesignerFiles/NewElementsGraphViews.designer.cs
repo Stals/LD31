@@ -605,6 +605,21 @@ public partial class MapNodeView : MapNodeViewViewBase {
 
 public class CaveNodeViewViewBase : MapNodeView {
     
+    [UFToggleGroup("goldLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("goldLevelChanged")]
+    public bool _BindgoldLevel = true;
+    
+    [UFToggleGroup("attackLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("attackLevelChanged")]
+    public bool _BindattackLevel = true;
+    
+    [UFToggleGroup("defenseLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("defenseLevelChanged")]
+    public bool _BinddefenseLevel = true;
+    
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public Int32 _goldLevel;
@@ -636,8 +651,29 @@ public class CaveNodeViewViewBase : MapNodeView {
         return this.RequestViewModel(GameManager.Container.Resolve<CaveNodeController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void goldLevelChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void attackLevelChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void defenseLevelChanged(Int32 value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._BindgoldLevel) {
+            this.BindProperty(CaveNode._goldLevelProperty, this.goldLevelChanged);
+        }
+        if (this._BindattackLevel) {
+            this.BindProperty(CaveNode._attackLevelProperty, this.attackLevelChanged);
+        }
+        if (this._BinddefenseLevel) {
+            this.BindProperty(CaveNode._defenseLevelProperty, this.defenseLevelChanged);
+        }
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
