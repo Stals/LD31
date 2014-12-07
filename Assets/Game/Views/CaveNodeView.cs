@@ -18,7 +18,10 @@ public partial class CaveNodeView {
 
         CaveNode.gold = gold [value - 1];
 
-        goldView.goldLabel.text = CaveNode.gold.ToString();
+        if (goldView)
+        {
+            goldView.goldLabel.text = CaveNode.gold.ToString();
+        }
     }
 
     /// Subscribes to the property and is notified anytime the value changes.
@@ -44,8 +47,11 @@ public partial class CaveNodeView {
     public override void Awake()
     {
         base.Awake();
-        goldUI.createPrefab();
-        goldView = goldUI.guiObject.GetComponent<CaveGoldView>();
+        if (goldUI != null)
+        {
+            goldUI.createPrefab();
+            goldView = goldUI.guiObject.GetComponent<CaveGoldView>();
+        }
     }
 
 }
