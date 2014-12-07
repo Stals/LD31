@@ -63,5 +63,12 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
         return allNeighbors[ind].distance;
     }
 
+
+    // можно ли пройти насквозь
+    public bool isFriendly()
+    {
+        return owner == GameSceneManager.player;
+    }
+
     #endregion
 }
