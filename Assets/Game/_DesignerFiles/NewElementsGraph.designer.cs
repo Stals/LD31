@@ -1176,4 +1176,6 @@ public enum UnitState {
     Walking,
     
     Attacking,
+    
+    StandingOutside,
 }
