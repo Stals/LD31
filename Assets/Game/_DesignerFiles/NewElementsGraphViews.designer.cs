@@ -228,8 +228,8 @@ public abstract class UnitViewBase : EntityViewBase {
         this.ExecuteCommand(Unit.GoTo, mapNode);
     }
     
-    public virtual void ExecuteInitUnit(CityNodeViewModel cityNode) {
-        this.ExecuteCommand(Unit.InitUnit, cityNode);
+    public virtual void ExecuteInitUnit(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.InitUnit, mapNode);
     }
 }
 
@@ -621,8 +621,8 @@ public class UnitViewViewBase : EntityView {
         this.ExecuteCommand(Unit.GoTo, mapNode);
     }
     
-    public virtual void ExecuteInitUnit(CityNodeViewModel cityNode) {
-        this.ExecuteCommand(Unit.InitUnit, cityNode);
+    public virtual void ExecuteInitUnit(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.InitUnit, mapNode);
     }
 }
 

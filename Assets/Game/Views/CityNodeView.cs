@@ -32,7 +32,7 @@ public partial class CityNodeView {
         CityCellView[] viewCells = GetComponentsInChildren<CityCellView>();
         foreach (CityCellView cell in viewCells)
         {
-            //CityNode.cells.Add(cell);
+            //CityNode.cells.Add(cell.CityCell);
             //cell.setVisible(false);
         }
 
