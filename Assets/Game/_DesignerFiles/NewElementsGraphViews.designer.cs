@@ -554,7 +554,34 @@ public class LinkViewViewBase : LinkViewBase {
 public partial class LinkView : LinkViewViewBase {
 }
 
-public class UnitViewViewBase : UnitViewBase {
+public class UnitViewViewBase : EntityView {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _owner;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public UnitState _state;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _currentMapNode;
+    
+    public UnitViewModel Unit {
+        get {
+            return ((UnitViewModel)(this.ViewModelObject));
+        }
+        set {
+            this.ViewModelObject = value;
+        }
+    }
+    
+    public override System.Type ViewModelType {
+        get {
+            return typeof(UnitViewModel);
+        }
+    }
     
     public override ViewModel CreateModel() {
         return this.RequestViewModel(GameManager.Container.Resolve<UnitController>());
@@ -562,6 +589,18 @@ public class UnitViewViewBase : UnitViewBase {
     
     public override void Bind() {
         base.Bind();
+    }
+    
+    protected override void InitializeViewModel(ViewModel viewModel) {
+        base.InitializeViewModel(viewModel);
+        UnitViewModel unit = ((UnitViewModel)(viewModel));
+        unit.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
+        unit.state = this._state;
+        unit.currentMapNode = this._currentMapNode == null ? null : this._currentMapNode.ViewModelObject as MapNodeViewModel;
+    }
+    
+    public virtual void ExecuteGoTo(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.GoTo, mapNode);
     }
 }
 
