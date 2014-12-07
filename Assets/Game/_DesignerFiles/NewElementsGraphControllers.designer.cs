@@ -20,6 +20,7 @@ public abstract class OwnerControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public MapNodeController MapNodeController {get;set;}
     [Inject] public UnitController UnitController {get;set;}
     public abstract void InitializeOwner(OwnerViewModel owner);
@@ -128,6 +129,7 @@ public abstract class CityCellControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public CityNodeController CityNodeController {get;set;}
     [Inject] public UnitController UnitController {get;set;}
     public abstract void InitializeCityCell(CityCellViewModel cityCell);
@@ -149,6 +151,7 @@ public abstract class EntityControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public ActionController ActionController {get;set;}
     public abstract void InitializeEntity(EntityViewModel entity);
     
@@ -172,6 +175,7 @@ public abstract class MapControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public MapNodeController MapNodeController {get;set;}
     public abstract void InitializeMap(MapViewModel map);
     
@@ -195,6 +199,7 @@ public abstract class ActionControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public EntityController EntityController {get;set;}
     public abstract void InitializeAction(ActionViewModel action);
     
@@ -218,6 +223,7 @@ public abstract class LinkControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     [Inject] public MapNodeController MapNodeController {get;set;}
     public abstract void InitializeLink(LinkViewModel link);
     
@@ -238,6 +244,7 @@ public abstract class SettingsControllerBase : Controller {
     
     [Inject("MapInstance")] public MapViewModel MapInstance { get; set; }
     [Inject("GameSettings")] public SettingsViewModel GameSettings { get; set; }
+    [Inject("playerOwner")] public OwnerViewModel playerOwner { get; set; }
     public abstract void InitializeSettings(SettingsViewModel settings);
     
     public override ViewModel CreateEmpty() {

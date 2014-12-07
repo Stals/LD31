@@ -27,6 +27,12 @@ public abstract class OwnerViewBase : ViewBase {
     [UnityEngine.HideInInspector()]
     public Int32 _money;
     
+    public override string DefaultIdentifier {
+        get {
+            return "playerOwner";
+        }
+    }
+    
     public override System.Type ViewModelType {
         get {
             return typeof(OwnerViewModel);
