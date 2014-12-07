@@ -29,8 +29,15 @@ public partial class CityNodeView {
 
 	void setupCells()
 	{
-		gridUI.createPrefab ();
-		grid = gridUI.guiObject.GetComponent<CellsGridView>();
+        CityCellView[] viewCells = GetComponentsInChildren<CityCellView>();
+        foreach (CityCellView cell in viewCells)
+        {
+            //CityNode.cells.Add(cell);
+            //cell.setVisible(false);
+        }
+
+		//gridUI.createPrefab ();
+		//grid = gridUI.guiObject.GetComponent<CellsGridView>();
 	}
 
     public virtual bool CanGoTo()
