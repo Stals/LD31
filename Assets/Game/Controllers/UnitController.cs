@@ -198,11 +198,6 @@ public class UnitController : UnitControllerBase
 
     #endregion
 
-    public void initOnCreation(UnitViewModel unit, MapNodeViewModel nowCity)
-    {
-        unit.MyBehavior = new InCityBehavior(nowCity);
-    }
-
     public override void InitializeUnit(UnitViewModel unit) {
         unit.state = UnitState.InCity;
 
@@ -213,5 +208,12 @@ public class UnitController : UnitControllerBase
         base.GoTo(unit, arg);
 
         unit.MyBehavior.GoToNode(unit, this, arg);
+    }
+
+    public override void InitUnit(UnitViewModel unit, MapNodeViewModel arg)
+    {
+        base.InitUnit(unit, arg);
+
+        unit.MyBehavior = new InCityBehavior(arg);
     }
 }

@@ -11,7 +11,7 @@ public partial class UnitView {
     public override void Awake()
     {
         base.Awake();
-        //ExecuteCommand(Unit, Unit.currentMapNode);
+        ExecuteInitUnit(Unit.currentMapNode);
     }
 
     void Update () {
