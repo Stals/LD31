@@ -34,6 +34,16 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
         allNeighbors.Add(newInfo);
     }
 
+    public LinkViewModel MyLink(int ind)
+    {
+        return allNeighbors[ind].link;
+    }
+
+    public MapNodeViewModel MyNeighborMapNode(int ind)
+    {
+        return allNeighbors[ind].neighbor;
+    }
+
     #region IWeightGraphRealization
 
     public int MyIndex

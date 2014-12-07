@@ -33,4 +33,21 @@ public class MovingControllerCreator {
 
         pathFinder.LoadGraph(list);
     }
+
+    public MovingBetweenNodesController CreatePath(MapNodeViewModel from, MapNodeViewModel to)
+    {
+        IEnumerable<int> newPath = pathFinder.getPath(from, to);
+
+        List<LinkViewModel> links = new List<LinkViewModel>();
+        MapNodeViewModel now = from;
+
+        foreach (int i in newPath)
+        {
+            links.Add(now.MyLink(i));
+            now = now.MyNeighborMapNode(i);
+        }
+
+        MovingBetweenNodesController move = new MovingBetweenNodesController(links, from);
+        return move;
+    }
 }

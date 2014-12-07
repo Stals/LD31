@@ -5,5 +5,37 @@ using System.Linq;
 using UnityEngine;
 
 
-public partial class UnitViewModel {
+public partial class UnitViewModel
+{
+
+
+    #region Classes
+
+    abstract class UnitBehavior
+    {
+        public void UpdateMe(UnitViewModel unit)
+        {
+
+        }
+
+    }
+
+
+    class GoToNodeBehavior : UnitBehavior
+    {
+        public GoToNodeBehavior(MapNodeViewModel toNode, MapNodeViewModel fromNode)
+        {
+
+        }
+
+
+    }
+
+    #endregion
+
+    UnitBehavior myBehavior;
+
+
+
+
 }

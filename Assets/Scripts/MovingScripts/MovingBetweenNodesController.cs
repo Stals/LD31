@@ -14,7 +14,7 @@ public class MovingBetweenNodesController {
     List<bool> direction = new List<bool>();
     
 
-    MovingBetweenNodesController(List<LinkViewModel> inputLinks, MapNodeViewModel start)
+    public MovingBetweenNodesController(List<LinkViewModel> inputLinks, MapNodeViewModel start)
     {
         float length = 0f;
 
