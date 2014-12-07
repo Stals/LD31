@@ -11,6 +11,14 @@ public partial class UnitView {
     public override void Awake()
     {
         base.Awake();
-        Unit.Controller.Initialize(Unit, Unit.currentMapNode
+        //ExecuteCommand(Unit, Unit.currentMapNode);
+    }
+
+    void Update () {
+        if (isClicked())
+        {
+            GameSceneManager.selectedUnit = this;
+            //GameSceneManager.startNode = Unit.currentMapNode;
+        }
     }
 }

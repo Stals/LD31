@@ -26,6 +26,8 @@ public sealed partial class GameSceneManagerSettings {
 // </summary>
 public class GameSceneManagerBase : SceneManager {
     
+    private OwnerViewModel _playerOwner;
+    
     private SettingsViewModel _GameSettings;
     
     private MapViewModel _MapInstance;
@@ -53,6 +55,19 @@ public class GameSceneManagerBase : SceneManager {
     private SettingsController _SettingsController;
     
     public GameSceneManagerSettings _GameSceneManagerSettings = new GameSceneManagerSettings();
+    
+    [Inject("playerOwner")]
+    public virtual OwnerViewModel playerOwner {
+        get {
+            if ((this._playerOwner == null)) {
+                this._playerOwner = CreateInstanceViewModel<OwnerViewModel>(OwnerController, "playerOwner");
+            }
+            return this._playerOwner;
+        }
+        set {
+            _playerOwner = value;
+        }
+    }
     
     [Inject("GameSettings")]
     public virtual SettingsViewModel GameSettings {
@@ -230,6 +245,7 @@ public class GameSceneManagerBase : SceneManager {
     // </summary>
     public override void Setup() {
         base.Setup();
+        Container.RegisterViewModel<OwnerViewModel>(playerOwner,"playerOwner");
         Container.RegisterViewModel<SettingsViewModel>(GameSettings,"GameSettings");
         Container.RegisterViewModel<MapViewModel>(MapInstance,"MapInstance");
         Container.RegisterController<OwnerController>(OwnerController);
@@ -244,6 +260,7 @@ public class GameSceneManagerBase : SceneManager {
         Container.RegisterController<LinkController>(LinkController);
         Container.RegisterController<SettingsController>(SettingsController);
         this.Container.InjectAll();
+        OwnerController.Initialize(playerOwner);
         SettingsController.Initialize(GameSettings);
         MapController.Initialize(MapInstance);
     }

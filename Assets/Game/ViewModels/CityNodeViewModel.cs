@@ -6,4 +6,15 @@ using UnityEngine;
 
 
 public partial class CityNodeViewModel {
+    public override bool ComputeHasEmptyCells()
+    {
+        foreach(CityCellViewModel cell in cells){
+            if(cell.isEmpty){
+                return true;
+            }
+        }
+        return false;
+    }
 }
+
+

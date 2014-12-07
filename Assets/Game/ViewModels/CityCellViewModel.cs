@@ -6,4 +6,9 @@ using UnityEngine;
 
 
 public partial class CityCellViewModel {
+
+    public override bool ComputeisEmpty()
+    {
+        return unit == null;
+    }
 }

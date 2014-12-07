@@ -33,5 +33,9 @@ public partial class CityNodeView {
 		grid = gridUI.guiObject.GetComponent<CellsGridView>();
 	}
 
+    public virtual bool CanGoTo()
+    {
+        return CityNode.HasEmptyCells;
+    }
 
 }

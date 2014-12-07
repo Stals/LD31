@@ -39,4 +39,24 @@ public partial class EntityView {
 		attackDefenseUI.createPrefab ();
 		adView = attackDefenseUI.guiObject.GetComponent<AttackDefenseView> ();
 	}
+
+    public bool isClicked()
+    {
+        //if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray,Mathf.Infinity);
+            
+            foreach (RaycastHit2D hit in hits)
+            {
+                if((hit.collider != null) && (hit.collider.transform == this.gameObject.transform))
+                {
+                    return true;
+                }           
+            }
+        }
+
+        return false;
+    }
 }
