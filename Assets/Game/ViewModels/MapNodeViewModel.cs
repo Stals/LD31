@@ -28,10 +28,20 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
 
         newInfo.link = newLink;
         newInfo.neighbor = mapViewModel;
-        newInfo.distance = newLink.GetPathLength;
+        newInfo.distance = newLink.PathLength;
 
 
         allNeighbors.Add(newInfo);
+    }
+
+    public LinkViewModel MyLink(int ind)
+    {
+        return allNeighbors[ind].link;
+    }
+
+    public MapNodeViewModel MyNeighborMapNode(int ind)
+    {
+        return allNeighbors[ind].neighbor;
     }
 
     #region IWeightGraphRealization

@@ -8,6 +8,12 @@ using UniRx;
 
 public partial class UnitView {
 
+    public override void Awake()
+    {
+        base.Awake();
+        ExecuteInitUnit(Unit.currentMapNode);
+    }
+
     void Update () {
         if (isClicked())
         {
