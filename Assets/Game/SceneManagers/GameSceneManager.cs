@@ -10,6 +10,8 @@ using UniRx;
 // </summary>
 public class GameSceneManager : GameSceneManagerBase {
     
+	static public float speed = 0.1f;
+
     // <summary>
     // This method is invoked exactly right before the Load method is invoked.
     // </summary>
