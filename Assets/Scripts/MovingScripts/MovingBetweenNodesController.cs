@@ -83,7 +83,7 @@ public class MovingBetweenNodesController {
         if (i == linksLengths.Count)
         {
             nowLinkId = i - 1;
-            nowLeftLength = linksLengths[i];
+            nowLeftLength = linksLengths[nowLinkId];
         }
         else
         {
