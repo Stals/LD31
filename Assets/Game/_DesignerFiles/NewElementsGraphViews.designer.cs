@@ -154,6 +154,10 @@ public abstract class CaveNodeViewBase : MapNodeViewBase {
     [UnityEngine.HideInInspector()]
     public Int32 _defenseLevel;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _gold;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CaveNodeViewModel);
@@ -179,6 +183,7 @@ public abstract class CaveNodeViewBase : MapNodeViewBase {
         caveNode.goldLevel = this._goldLevel;
         caveNode.attackLevel = this._attackLevel;
         caveNode.defenseLevel = this._defenseLevel;
+        caveNode.gold = this._gold;
     }
 }
 
@@ -710,6 +715,10 @@ public class CaveNodeViewViewBase : MapNodeView {
     [UnityEngine.HideInInspector()]
     public Int32 _defenseLevel;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _gold;
+    
     public CaveNodeViewModel CaveNode {
         get {
             return ((CaveNodeViewModel)(this.ViewModelObject));
@@ -760,6 +769,7 @@ public class CaveNodeViewViewBase : MapNodeView {
         caveNode.goldLevel = this._goldLevel;
         caveNode.attackLevel = this._attackLevel;
         caveNode.defenseLevel = this._defenseLevel;
+        caveNode.gold = this._gold;
     }
 }
 

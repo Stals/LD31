@@ -448,6 +448,8 @@ public class CaveNodeViewModelBase : MapNodeViewModel {
     
     public P<Int32> _defenseLevelProperty;
     
+    public P<Int32> _goldProperty;
+    
     public CaveNodeViewModelBase(CaveNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -461,6 +463,7 @@ public class CaveNodeViewModelBase : MapNodeViewModel {
         _goldLevelProperty = new P<Int32>(this, "goldLevel");
         _attackLevelProperty = new P<Int32>(this, "attackLevel");
         _defenseLevelProperty = new P<Int32>(this, "defenseLevel");
+        _goldProperty = new P<Int32>(this, "gold");
     }
 }
 
@@ -519,6 +522,21 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
         }
     }
     
+    public virtual P<Int32> goldProperty {
+        get {
+            return this._goldProperty;
+        }
+    }
+    
+    public virtual Int32 gold {
+        get {
+            return _goldProperty.Value;
+        }
+        set {
+            _goldProperty.Value = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
     }
@@ -528,6 +546,7 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
         stream.SerializeInt("goldLevel", this.goldLevel);
         stream.SerializeInt("attackLevel", this.attackLevel);
         stream.SerializeInt("defenseLevel", this.defenseLevel);
+        stream.SerializeInt("gold", this.gold);
     }
     
     public override void Read(ISerializerStream stream) {
@@ -535,6 +554,7 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
         		this.goldLevel = stream.DeserializeInt("goldLevel");;
         		this.attackLevel = stream.DeserializeInt("attackLevel");;
         		this.defenseLevel = stream.DeserializeInt("defenseLevel");;
+        		this.gold = stream.DeserializeInt("gold");;
     }
     
     public override void Unbind() {
@@ -546,6 +566,7 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
         list.Add(new ViewModelPropertyInfo(_goldLevelProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_attackLevelProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_defenseLevelProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_goldProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
