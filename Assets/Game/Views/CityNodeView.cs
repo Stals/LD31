@@ -24,6 +24,8 @@ public partial class CityNodeView {
 	{
 		base.Awake ();
 
+        setVisible(false);
+
 		setupCells ();
 	}
 

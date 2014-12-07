@@ -48,6 +48,7 @@ public partial class CaveNodeView {
     {
         base.Awake();
          
+        setVisible(false);
 
         SpawnFollowingUI[] arr = GetComponents<SpawnFollowingUI>();
 

@@ -59,4 +59,12 @@ public partial class EntityView {
 
         return false;
     }
+
+    public void setVisible(bool b){
+        SpriteRenderer render = GetComponent<SpriteRenderer>();
+        
+        Color c = render.color;
+        c.a = b ? 255f : 0f;
+        render.color = c;
+    }
 }
