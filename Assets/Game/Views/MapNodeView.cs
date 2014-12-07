@@ -16,8 +16,19 @@ public partial class MapNodeView {
         }
 	}
 
+    public virtual bool CanGoTo()
+    {
+        return true;
+    }
+
 	void onNodeClicked()
 	{
+        if (!CanGoTo())
+        {
+            GameSceneManager.selectedUnit = null;
+            return;
+        }
+
         if (GameSceneManager.selectedUnit != null)
         {
             //GameSceneManager.endNode = this;

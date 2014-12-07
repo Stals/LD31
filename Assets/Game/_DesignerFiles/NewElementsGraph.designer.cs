@@ -274,9 +274,13 @@ if (stream.DeepSerialize) {
 [DiagramInfoAttribute("Game")]
 public class CityNodeViewModelBase : MapNodeViewModel {
     
+    private IDisposable _HasEmptyCellsDisposable;
+    
     public P<Int32> _maxCellsProperty;
     
     public P<Int32> _GoldPerTIckProperty;
+    
+    public P<Boolean> _HasEmptyCellsProperty;
     
     public ModelCollection<CityCellViewModel> _cellsProperty;
     
@@ -294,11 +298,27 @@ public class CityNodeViewModelBase : MapNodeViewModel {
         base.Bind();
         _maxCellsProperty = new P<Int32>(this, "maxCells");
         _GoldPerTIckProperty = new P<Int32>(this, "GoldPerTIck");
+        _HasEmptyCellsProperty = new P<Boolean>(this, "HasEmptyCells");
         _cellsProperty = new ModelCollection<CityCellViewModel>(this, "cells");
         _cellsProperty.CollectionChanged += cellsCollectionChanged;
+        this.ResetHasEmptyCells();
+    }
+    
+    public virtual void ResetHasEmptyCells() {
+        if (_HasEmptyCellsDisposable != null) _HasEmptyCellsDisposable.Dispose();
+        _HasEmptyCellsDisposable = _HasEmptyCellsProperty.ToComputed( ComputeHasEmptyCells, this.GetHasEmptyCellsDependents().ToArray() ).DisposeWith(this);
     }
     
     protected virtual void cellsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
+    }
+    
+    public virtual Boolean ComputeHasEmptyCells() {
+        return default(Boolean);
+    }
+    
+    public virtual IEnumerable<IObservableProperty> GetHasEmptyCellsDependents() {
+        yield return _maxCellsProperty;
+        yield break;
     }
 }
 
@@ -339,6 +359,21 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
         }
         set {
             _GoldPerTIckProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Boolean> HasEmptyCellsProperty {
+        get {
+            return this._HasEmptyCellsProperty;
+        }
+    }
+    
+    public virtual Boolean HasEmptyCells {
+        get {
+            return _HasEmptyCellsProperty.Value;
+        }
+        set {
+            _HasEmptyCellsProperty.Value = value;
         }
     }
     
@@ -389,6 +424,7 @@ if (stream.DeepSerialize) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_maxCellsProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_GoldPerTIckProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_HasEmptyCellsProperty, false, false, false, true));
         list.Add(new ViewModelPropertyInfo(_cellsProperty, true, true, false));
     }
     
