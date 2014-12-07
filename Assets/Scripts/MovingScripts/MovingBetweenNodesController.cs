@@ -92,7 +92,7 @@ public class MovingBetweenNodesController {
     {
         get
         {
-            return PositionInGivenLink(nowLeftLength / linksLengths[nowLinkId], nowLinkId - 1);
+            return PositionInGivenLink(nowLeftLength / linksLengths[nowLinkId], nowLinkId);
         }
     }
 

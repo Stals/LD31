@@ -42,12 +42,12 @@ public class UnitController : UnitControllerBase
     {
 
 
-        public void UpdateMe(UnitViewModel unit, UnitController controller)
+        public virtual void UpdateMe(UnitViewModel unit, UnitController controller)
         {
 
         }
 
-        public void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
+        public virtual void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
 
         }
@@ -122,13 +122,12 @@ public class UnitController : UnitControllerBase
 
         }
 
-        public void UpdateMe(UnitViewModel unit, UnitController controller)
+        public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
-            movingController.moveMe(unit, GameSceneManager.speed);
-            
+            movingController.moveMe(unit, GameSceneManager.speed);            
         }
 
-        public void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
+        public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
             PositionInfo nowInfo = new PositionInfo();
             nowInfo.StartNode = movingController.NowStartNode;
@@ -162,12 +161,12 @@ public class UnitController : UnitControllerBase
 
         }
 
-        public void UpdateMe(UnitViewModel unit, UnitController controller)
+        public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
             controller.ExecuteCommand(unit.TakeDamage, 1);
         }
 
-        public void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
+        public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
             unit.MyBehavior = new GoToNodeBehavior(target, myPosInfo);
         }
@@ -185,15 +184,32 @@ public class UnitController : UnitControllerBase
             nowNode = city;
         }
 
-        public void UpdateMe(UnitViewModel unit, UnitController controller)
+        public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
             unit.Position = Vector3.zero;
         }
 
-        public void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
+        public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
             unit.MyBehavior = new GoToNodeBehavior(nowNode, target);
         }
+    }
+
+    public abstract class AttackBehavior : UnitBehavior
+    {
+
+
+        public override void UpdateMe(UnitViewModel unit, UnitController controller)
+        {
+
+        }
+
+        public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
+        {
+
+        }
+
+        public static UnitState myState;
     }
 
     #endregion
@@ -215,5 +231,15 @@ public class UnitController : UnitControllerBase
         base.InitUnit(unit, arg);
 
         unit.MyBehavior = new InCityBehavior(arg);
+    }
+
+    public override void UpdateMe(UnitViewModel unit)
+    {
+        base.UpdateMe(unit);
+
+        if (unit.MyBehavior != null)
+        {
+            unit.MyBehavior.UpdateMe(unit, this);
+        }
     }
 }

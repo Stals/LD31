@@ -21,4 +21,10 @@ public partial class UnitView {
             //GameSceneManager.startNode = Unit.currentMapNode;
         }
     }
+
+    void FixedUpdate()
+    {
+        ExecuteUpdateMe();
+        transform.position = Unit.Position;
+    }
 }
