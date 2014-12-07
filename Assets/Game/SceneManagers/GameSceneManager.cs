@@ -16,6 +16,8 @@ public class GameSceneManager : GameSceneManagerBase {
 	//static public MapNodeViewModel startNode = null;
     //static public MapNodeViewModel endNode = null;
 
+    static public OwnerViewModel player;
+
     // <summary>
     // This method is invoked exactly right before the Load method is invoked.
     // </summary>

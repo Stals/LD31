@@ -9,5 +9,6 @@ using UnityEngine;
 public class OwnerController : OwnerControllerBase {
     
     public override void InitializeOwner(OwnerViewModel owner) {
+        GameSceneManager.player = owner;
     }
 }
