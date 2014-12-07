@@ -47,6 +47,15 @@ public partial class CaveNodeView {
     public override void Awake()
     {
         base.Awake();
+         
+
+        SpawnFollowingUI[] arr = GetComponents<SpawnFollowingUI>();
+
+        if (arr.Length != 0)
+        {
+            goldUI = arr [arr.Length - 1];
+        }
+
         if (goldUI != null)
         {
             goldUI.createPrefab();
