@@ -29,7 +29,8 @@ public partial class MapNodeView {
             return;
         }
 
-        if (GameSceneManager.selectedUnit != null)
+        if ((GameSceneManager.selectedUnit != null) &&
+            (GameSceneManager.selectedUnit.Unit.currentMapNode != MapNode))
         {
             //GameSceneManager.endNode = this;
             // create path, ect, ect
