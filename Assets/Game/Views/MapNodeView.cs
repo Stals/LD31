@@ -8,6 +8,13 @@ using UniRx;
 
 public partial class MapNodeView {
 
+    public override void Awake()
+    {
+        base.Awake();
+
+        MapNode.position = transform.position;
+    }
+
 	// Update is called once per frame
 	void Update () {
         if (isClicked())

@@ -70,6 +70,10 @@ public abstract class MapNodeViewBase : EntityViewBase {
     [UnityEngine.HideInInspector()]
     public Boolean _isVisible;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Vector3 _position;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(MapNodeViewModel);
@@ -94,6 +98,7 @@ public abstract class MapNodeViewBase : EntityViewBase {
         MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
         mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         mapNode.isVisible = this._isVisible;
+        mapNode.position = this._position;
     }
 }
 
@@ -652,6 +657,10 @@ public class MapNodeViewViewBase : EntityView {
     [UnityEngine.HideInInspector()]
     public Boolean _isVisible;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Vector3 _position;
+    
     public MapNodeViewModel MapNode {
         get {
             return ((MapNodeViewModel)(this.ViewModelObject));
@@ -680,6 +689,7 @@ public class MapNodeViewViewBase : EntityView {
         MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
         mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         mapNode.isVisible = this._isVisible;
+        mapNode.position = this._position;
     }
 }
 

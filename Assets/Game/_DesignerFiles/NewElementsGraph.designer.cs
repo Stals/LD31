@@ -126,6 +126,8 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public P<Boolean> _isVisibleProperty;
     
+    public P<Vector3> _positionProperty;
+    
     public ModelCollection<LinkViewModel> _connectionsProperty;
     
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
@@ -140,6 +142,7 @@ public class MapNodeViewModelBase : EntityViewModel {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
         _isVisibleProperty = new P<Boolean>(this, "isVisible");
+        _positionProperty = new P<Vector3>(this, "position");
         _connectionsProperty = new ModelCollection<LinkViewModel>(this, "connections");
         _connectionsProperty.CollectionChanged += connectionsCollectionChanged;
     }
@@ -195,6 +198,21 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
+    public virtual P<Vector3> positionProperty {
+        get {
+            return this._positionProperty;
+        }
+    }
+    
+    public virtual Vector3 position {
+        get {
+            return _positionProperty.Value;
+        }
+        set {
+            _positionProperty.Value = value;
+        }
+    }
+    
     public virtual ModelCollection<LinkViewModel> connections {
         get {
             return this._connectionsProperty;
@@ -236,6 +254,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
 		base.Write(stream);
 		if (stream.DeepSerialize) stream.SerializeObject("owner", this.owner);
         stream.SerializeBool("isVisible", this.isVisible);
+        stream.SerializeVector3("position", this.position);
         if (stream.DeepSerialize) stream.SerializeArray("connections", this.connections);
     }
     
@@ -243,6 +262,7 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
 		base.Read(stream);
 		if (stream.DeepSerialize) this.owner = stream.DeserializeObject<OwnerViewModel>("owner");
         		this.isVisible = stream.DeserializeBool("isVisible");;
+        		this.position = stream.DeserializeVector3("position");;
 if (stream.DeepSerialize) {
         this.connections.Clear();
         this.connections.AddRange(stream.DeserializeObjectArray<LinkViewModel>("connections"));
@@ -258,6 +278,7 @@ if (stream.DeepSerialize) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_ownerProperty, true, false, false));
         list.Add(new ViewModelPropertyInfo(_isVisibleProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_positionProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_connectionsProperty, true, true, false));
     }
     
