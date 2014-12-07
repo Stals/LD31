@@ -17,6 +17,8 @@ public partial class CaveNodeView {
         base.goldLevelChanged(value);
 
         CaveNode.gold = gold [value - 1];
+
+        goldView.goldLabel.text = CaveNode.gold.ToString();
     }
 
     /// Subscribes to the property and is notified anytime the value changes.
@@ -32,6 +34,18 @@ public partial class CaveNodeView {
         base.defenseLevelChanged(value);
 
         CaveNode.defence = defense[value - 1];
+    }
+
+    [SerializeField]
+    SpawnFollowingUI goldUI;
+
+    CaveGoldView goldView;
+
+    public override void Awake()
+    {
+        base.Awake();
+        goldUI.createPrefab();
+        goldView = goldUI.guiObject.GetComponent<CaveGoldView>();
     }
 
 }
