@@ -127,6 +127,10 @@ public abstract class CityNodeViewBase : MapNodeViewBase {
         cityNode.maxCells = this._maxCells;
         cityNode.GoldPerTIck = this._GoldPerTIck;
     }
+    
+    public virtual void ExecuteaddUnit(UnitViewModel unit) {
+        this.ExecuteCommand(CityNode.addUnit, unit);
+    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -494,6 +498,10 @@ public class CityNodeViewViewBase : MapNodeView {
         CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
         cityNode.maxCells = this._maxCells;
         cityNode.GoldPerTIck = this._GoldPerTIck;
+    }
+    
+    public virtual void ExecuteaddUnit(UnitViewModel unit) {
+        this.ExecuteCommand(CityNode.addUnit, unit);
     }
 }
 
