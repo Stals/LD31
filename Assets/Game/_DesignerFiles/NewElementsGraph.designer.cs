@@ -128,10 +128,6 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public ModelCollection<LinkViewModel> _connectionsProperty;
     
-    protected CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> _Interact;
-    
-    protected CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> _Uninteract;
-    
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -205,24 +201,6 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
-    public virtual CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> Interact {
-        get {
-            return _Interact;
-        }
-        set {
-            _Interact = value;
-        }
-    }
-    
-    public virtual CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> Uninteract {
-        get {
-            return _Uninteract;
-        }
-        set {
-            _Uninteract = value;
-        }
-    }
-    
     public virtual UnitViewModel ParentUnit {
         get {
             return this._ParentUnit;
@@ -252,9 +230,6 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
-        var mapNode = controller as MapNodeControllerBase;
-        this.Interact = new CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel>(this, mapNode.Interact);
-        this.Uninteract = new CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel>(this, mapNode.Uninteract);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -288,8 +263,6 @@ if (stream.DeepSerialize) {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
-        list.Add(new ViewModelCommandInfo("Interact", Interact) { ParameterType = typeof(UnitViewModel) });
-        list.Add(new ViewModelCommandInfo("Uninteract", Uninteract) { ParameterType = typeof(UnitViewModel) });
     }
     
     protected override void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
@@ -634,8 +607,6 @@ public class UnitViewModelBase : EntityViewModel {
 
 public partial class UnitViewModel : UnitViewModelBase {
     
-    private MapNodeViewModel _ParentMapNode;
-    
     private CityNodeViewModel _ParentCityNode;
     
     private CityCellViewModel _ParentCityCell;
@@ -719,15 +690,6 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
         set {
             _UpdateMe = value;
-        }
-    }
-    
-    public virtual MapNodeViewModel ParentMapNode {
-        get {
-            return this._ParentMapNode;
-        }
-        set {
-            _ParentMapNode = value;
         }
     }
     

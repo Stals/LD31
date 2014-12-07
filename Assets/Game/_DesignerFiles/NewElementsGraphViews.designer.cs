@@ -95,14 +95,6 @@ public abstract class MapNodeViewBase : EntityViewBase {
         mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         mapNode.isVisible = this._isVisible;
     }
-    
-    public virtual void ExecuteInteract(UnitViewModel unit) {
-        this.ExecuteCommand(MapNode.Interact, unit);
-    }
-    
-    public virtual void ExecuteUninteract(UnitViewModel unit) {
-        this.ExecuteCommand(MapNode.Uninteract, unit);
-    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -688,14 +680,6 @@ public class MapNodeViewViewBase : EntityView {
         MapNodeViewModel mapNode = ((MapNodeViewModel)(viewModel));
         mapNode.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         mapNode.isVisible = this._isVisible;
-    }
-    
-    public virtual void ExecuteInteract(UnitViewModel unit) {
-        this.ExecuteCommand(MapNode.Interact, unit);
-    }
-    
-    public virtual void ExecuteUninteract(UnitViewModel unit) {
-        this.ExecuteCommand(MapNode.Uninteract, unit);
     }
 }
 
