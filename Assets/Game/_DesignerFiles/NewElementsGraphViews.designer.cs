@@ -98,6 +98,10 @@ public abstract class CityNodeViewBase : MapNodeViewBase {
     [UnityEngine.HideInInspector()]
     public Int32 _maxCells;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _GoldPerTIck;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(CityNodeViewModel);
@@ -121,11 +125,24 @@ public abstract class CityNodeViewBase : MapNodeViewBase {
         base.InitializeViewModel(viewModel);
         CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
         cityNode.maxCells = this._maxCells;
+        cityNode.GoldPerTIck = this._GoldPerTIck;
     }
 }
 
 [DiagramInfoAttribute("Game")]
 public abstract class CaveNodeViewBase : MapNodeViewBase {
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _goldLevel;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _attackLevel;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _defenseLevel;
     
     public override System.Type ViewModelType {
         get {
@@ -148,6 +165,10 @@ public abstract class CaveNodeViewBase : MapNodeViewBase {
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CaveNodeViewModel caveNode = ((CaveNodeViewModel)(viewModel));
+        caveNode.goldLevel = this._goldLevel;
+        caveNode.attackLevel = this._attackLevel;
+        caveNode.defenseLevel = this._defenseLevel;
     }
 }
 
@@ -161,6 +182,10 @@ public abstract class UnitViewBase : EntityViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public UnitState _state;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _currentMapNode;
     
     public override System.Type ViewModelType {
         get {
@@ -186,6 +211,11 @@ public abstract class UnitViewBase : EntityViewBase {
         UnitViewModel unit = ((UnitViewModel)(viewModel));
         unit.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         unit.state = this._state;
+        unit.currentMapNode = this._currentMapNode == null ? null : this._currentMapNode.ViewModelObject as MapNodeViewModel;
+    }
+    
+    public virtual void ExecuteGoTo(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.GoTo, mapNode);
     }
 }
 
@@ -425,6 +455,10 @@ public class CityNodeViewViewBase : MapNodeView {
     [UnityEngine.HideInInspector()]
     public Int32 _maxCells;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _GoldPerTIck;
+    
     public CityNodeViewModel CityNode {
         get {
             return ((CityNodeViewModel)(this.ViewModelObject));
@@ -459,6 +493,7 @@ public class CityNodeViewViewBase : MapNodeView {
         base.InitializeViewModel(viewModel);
         CityNodeViewModel cityNode = ((CityNodeViewModel)(viewModel));
         cityNode.maxCells = this._maxCells;
+        cityNode.GoldPerTIck = this._GoldPerTIck;
     }
 }
 
@@ -579,6 +614,33 @@ public partial class MapNodeView : MapNodeViewViewBase {
 
 public class CaveNodeViewViewBase : MapNodeView {
     
+    [UFToggleGroup("goldLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("goldLevelChanged")]
+    public bool _BindgoldLevel = true;
+    
+    [UFToggleGroup("attackLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("attackLevelChanged")]
+    public bool _BindattackLevel = true;
+    
+    [UFToggleGroup("defenseLevel")]
+    [UnityEngine.HideInInspector()]
+    [UFRequireInstanceMethod("defenseLevelChanged")]
+    public bool _BinddefenseLevel = true;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _goldLevel;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _attackLevel;
+    
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Int32 _defenseLevel;
+    
     public CaveNodeViewModel CaveNode {
         get {
             return ((CaveNodeViewModel)(this.ViewModelObject));
@@ -598,12 +660,37 @@ public class CaveNodeViewViewBase : MapNodeView {
         return this.RequestViewModel(GameManager.Container.Resolve<CaveNodeController>());
     }
     
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void goldLevelChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void attackLevelChanged(Int32 value) {
+    }
+    
+    /// Subscribes to the property and is notified anytime the value changes.
+    public virtual void defenseLevelChanged(Int32 value) {
+    }
+    
     public override void Bind() {
         base.Bind();
+        if (this._BindgoldLevel) {
+            this.BindProperty(CaveNode._goldLevelProperty, this.goldLevelChanged);
+        }
+        if (this._BindattackLevel) {
+            this.BindProperty(CaveNode._attackLevelProperty, this.attackLevelChanged);
+        }
+        if (this._BinddefenseLevel) {
+            this.BindProperty(CaveNode._defenseLevelProperty, this.defenseLevelChanged);
+        }
     }
     
     protected override void InitializeViewModel(ViewModel viewModel) {
         base.InitializeViewModel(viewModel);
+        CaveNodeViewModel caveNode = ((CaveNodeViewModel)(viewModel));
+        caveNode.goldLevel = this._goldLevel;
+        caveNode.attackLevel = this._attackLevel;
+        caveNode.defenseLevel = this._defenseLevel;
     }
 }
 

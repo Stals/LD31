@@ -150,6 +150,8 @@ public class MapNodeViewModelBase : EntityViewModel {
 
 public partial class MapNodeViewModel : MapNodeViewModelBase {
     
+    private UnitViewModel _ParentUnit;
+    
     private MapViewModel _ParentMap;
     
     private LinkViewModel _ParentLink;
@@ -196,6 +198,15 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     public virtual ModelCollection<LinkViewModel> connections {
         get {
             return this._connectionsProperty;
+        }
+    }
+    
+    public virtual UnitViewModel ParentUnit {
+        get {
+            return this._ParentUnit;
+        }
+        set {
+            _ParentUnit = value;
         }
     }
     
@@ -265,6 +276,8 @@ public class CityNodeViewModelBase : MapNodeViewModel {
     
     public P<Int32> _maxCellsProperty;
     
+    public P<Int32> _GoldPerTIckProperty;
+    
     public ModelCollection<CityCellViewModel> _cellsProperty;
     
     public CityNodeViewModelBase(CityNodeControllerBase controller, bool initialize = true) : 
@@ -278,6 +291,7 @@ public class CityNodeViewModelBase : MapNodeViewModel {
     public override void Bind() {
         base.Bind();
         _maxCellsProperty = new P<Int32>(this, "maxCells");
+        _GoldPerTIckProperty = new P<Int32>(this, "GoldPerTIck");
         _cellsProperty = new ModelCollection<CityCellViewModel>(this, "cells");
         _cellsProperty.CollectionChanged += cellsCollectionChanged;
     }
@@ -311,6 +325,21 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
         }
     }
     
+    public virtual P<Int32> GoldPerTIckProperty {
+        get {
+            return this._GoldPerTIckProperty;
+        }
+    }
+    
+    public virtual Int32 GoldPerTIck {
+        get {
+            return _GoldPerTIckProperty.Value;
+        }
+        set {
+            _GoldPerTIckProperty.Value = value;
+        }
+    }
+    
     public virtual ModelCollection<CityCellViewModel> cells {
         get {
             return this._cellsProperty;
@@ -324,12 +353,14 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
         stream.SerializeInt("maxCells", this.maxCells);
+        stream.SerializeInt("GoldPerTIck", this.GoldPerTIck);
         if (stream.DeepSerialize) stream.SerializeArray("cells", this.cells);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
         		this.maxCells = stream.DeserializeInt("maxCells");;
+        		this.GoldPerTIck = stream.DeserializeInt("GoldPerTIck");;
 if (stream.DeepSerialize) {
         this.cells.Clear();
         this.cells.AddRange(stream.DeserializeObjectArray<CityCellViewModel>("cells"));
@@ -344,6 +375,7 @@ if (stream.DeepSerialize) {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_maxCellsProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_GoldPerTIckProperty, false, false, false));
         list.Add(new ViewModelPropertyInfo(_cellsProperty, true, true, false));
     }
     
@@ -360,6 +392,12 @@ if (stream.DeepSerialize) {
 [DiagramInfoAttribute("Game")]
 public class CaveNodeViewModelBase : MapNodeViewModel {
     
+    public P<Int32> _goldLevelProperty;
+    
+    public P<Int32> _attackLevelProperty;
+    
+    public P<Int32> _defenseLevelProperty;
+    
     public CaveNodeViewModelBase(CaveNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -370,6 +408,9 @@ public class CaveNodeViewModelBase : MapNodeViewModel {
     
     public override void Bind() {
         base.Bind();
+        _goldLevelProperty = new P<Int32>(this, "goldLevel");
+        _attackLevelProperty = new P<Int32>(this, "attackLevel");
+        _defenseLevelProperty = new P<Int32>(this, "defenseLevel");
     }
 }
 
@@ -383,16 +424,67 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
             base() {
     }
     
+    public virtual P<Int32> goldLevelProperty {
+        get {
+            return this._goldLevelProperty;
+        }
+    }
+    
+    public virtual Int32 goldLevel {
+        get {
+            return _goldLevelProperty.Value;
+        }
+        set {
+            _goldLevelProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> attackLevelProperty {
+        get {
+            return this._attackLevelProperty;
+        }
+    }
+    
+    public virtual Int32 attackLevel {
+        get {
+            return _attackLevelProperty.Value;
+        }
+        set {
+            _attackLevelProperty.Value = value;
+        }
+    }
+    
+    public virtual P<Int32> defenseLevelProperty {
+        get {
+            return this._defenseLevelProperty;
+        }
+    }
+    
+    public virtual Int32 defenseLevel {
+        get {
+            return _defenseLevelProperty.Value;
+        }
+        set {
+            _defenseLevelProperty.Value = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
     }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
+        stream.SerializeInt("goldLevel", this.goldLevel);
+        stream.SerializeInt("attackLevel", this.attackLevel);
+        stream.SerializeInt("defenseLevel", this.defenseLevel);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
+        		this.goldLevel = stream.DeserializeInt("goldLevel");;
+        		this.attackLevel = stream.DeserializeInt("attackLevel");;
+        		this.defenseLevel = stream.DeserializeInt("defenseLevel");;
     }
     
     public override void Unbind() {
@@ -401,6 +493,9 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
     
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
+        list.Add(new ViewModelPropertyInfo(_goldLevelProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_attackLevelProperty, false, false, false));
+        list.Add(new ViewModelPropertyInfo(_defenseLevelProperty, false, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
@@ -415,6 +510,10 @@ public class UnitViewModelBase : EntityViewModel {
     
     public P<UnitState> _stateProperty;
     
+    public P<MapNodeViewModel> _currentMapNodeProperty;
+    
+    protected CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel> _GoTo;
+    
     public UnitViewModelBase(UnitControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -427,6 +526,7 @@ public class UnitViewModelBase : EntityViewModel {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
         _stateProperty = new P<UnitState>(this, "state");
+        _currentMapNodeProperty = new P<MapNodeViewModel>(this, "currentMapNode");
     }
 }
 
@@ -473,6 +573,31 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
     }
     
+    public virtual P<MapNodeViewModel> currentMapNodeProperty {
+        get {
+            return this._currentMapNodeProperty;
+        }
+    }
+    
+    public virtual MapNodeViewModel currentMapNode {
+        get {
+            return _currentMapNodeProperty.Value;
+        }
+        set {
+            _currentMapNodeProperty.Value = value;
+            if (value != null) value.ParentUnit = this;
+        }
+    }
+    
+    public virtual CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel> GoTo {
+        get {
+            return _GoTo;
+        }
+        set {
+            _GoTo = value;
+        }
+    }
+    
     public virtual CityCellViewModel ParentCityCell {
         get {
             return this._ParentCityCell;
@@ -484,18 +609,22 @@ public partial class UnitViewModel : UnitViewModelBase {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var unit = controller as UnitControllerBase;
+        this.GoTo = new CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel>(this, unit.GoTo);
     }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		if (stream.DeepSerialize) stream.SerializeObject("owner", this.owner);
 		stream.SerializeInt("state", (int)this.state);
+		if (stream.DeepSerialize) stream.SerializeObject("currentMapNode", this.currentMapNode);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		if (stream.DeepSerialize) this.owner = stream.DeserializeObject<OwnerViewModel>("owner");
 		this.state = (UnitState)stream.DeserializeInt("state");
+		if (stream.DeepSerialize) this.currentMapNode = stream.DeserializeObject<MapNodeViewModel>("currentMapNode");
     }
     
     public override void Unbind() {
@@ -506,10 +635,12 @@ public partial class UnitViewModel : UnitViewModelBase {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_ownerProperty, true, false, false));
         list.Add(new ViewModelPropertyInfo(_stateProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_currentMapNodeProperty, true, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("GoTo", GoTo) { ParameterType = typeof(MapNodeViewModel) });
     }
 }
 
@@ -1092,4 +1223,6 @@ public enum UnitState {
     Walking,
     
     Attacking,
+    
+    StandingOutside,
 }
