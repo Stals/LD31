@@ -672,7 +672,11 @@ public partial class UnitViewModel : UnitViewModelBase {
 [DiagramInfoAttribute("Game")]
 public class CityCellViewModelBase : ViewModel {
     
+    private IDisposable _isEmptyDisposable;
+    
     public P<UnitViewModel> _unitProperty;
+    
+    public P<Boolean> _isEmptyProperty;
     
     public CityCellViewModelBase(CityCellControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
@@ -685,6 +689,24 @@ public class CityCellViewModelBase : ViewModel {
     public override void Bind() {
         base.Bind();
         _unitProperty = new P<UnitViewModel>(this, "unit");
+        _isEmptyProperty = new P<Boolean>(this, "isEmpty");
+        this.ResetisEmpty();
+        this.BindProperty(_unitProperty, p=> ResetisEmpty());
+    }
+    
+    public virtual void ResetisEmpty() {
+        if (_isEmptyDisposable != null) _isEmptyDisposable.Dispose();
+        _isEmptyDisposable = _isEmptyProperty.ToComputed( ComputeisEmpty, this.GetisEmptyDependents().ToArray() ).DisposeWith(this);
+    }
+    
+    public virtual Boolean ComputeisEmpty() {
+        return default(Boolean);
+    }
+    
+    public virtual IEnumerable<IObservableProperty> GetisEmptyDependents() {
+        if (_unitProperty.Value != null) {
+        }
+        yield break;
     }
 }
 
@@ -716,6 +738,21 @@ public partial class CityCellViewModel : CityCellViewModelBase {
         }
     }
     
+    public virtual P<Boolean> isEmptyProperty {
+        get {
+            return this._isEmptyProperty;
+        }
+    }
+    
+    public virtual Boolean isEmpty {
+        get {
+            return _isEmptyProperty.Value;
+        }
+        set {
+            _isEmptyProperty.Value = value;
+        }
+    }
+    
     public virtual CityNodeViewModel ParentCityNode {
         get {
             return this._ParentCityNode;
@@ -726,6 +763,7 @@ public partial class CityCellViewModel : CityCellViewModelBase {
     }
     
     protected override void WireCommands(Controller controller) {
+        var cityCell = controller as CityCellControllerBase;
     }
     
     public override void Write(ISerializerStream stream) {
@@ -745,6 +783,7 @@ public partial class CityCellViewModel : CityCellViewModelBase {
     protected override void FillProperties(List<ViewModelPropertyInfo> list) {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_unitProperty, true, false, false));
+        list.Add(new ViewModelPropertyInfo(_isEmptyProperty, false, false, false, true));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
