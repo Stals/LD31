@@ -105,15 +105,33 @@ namespace SimpleDeixtra
 
             return result;
         }
-
+ 
+        /// <summary>
+        /// find path between elements 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns>null if path not found, zero size array if from == to</returns>
         public IEnumerable<int> getPath(IWeightGraphElement from, IWeightGraphElement to)
         {
+            if (from == to)
+            {                
+                return new List<int>();                
+            }
+
             clearValues();
 
             currentWeights[from.MyIndex] = 0f;
             Colorify(from);
 
-            return getBackPath(to);
+            List<int> result = getBackPath(to);
+
+            if (result.Count == 0)
+            {
+                return null;
+            }
+
+            return result;
         }
 
 

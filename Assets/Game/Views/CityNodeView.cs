@@ -12,13 +12,13 @@ public partial class CityNodeView {
     public override void maxCellsChanged(Int32 value) {
         base.maxCellsChanged(value);
 
-		grid.cellsCountChanged (value);
+		//grid.cellsCountChanged (value);
     }
 
-	[SerializeField]
-	SpawnFollowingUI gridUI;
+	//[SerializeField]
+	//SpawnFollowingUI gridUI;
 
-	CellsGridView grid;
+	//CellsGridView grid;
 
 	public override void Awake ()
 	{
@@ -29,8 +29,15 @@ public partial class CityNodeView {
 
 	void setupCells()
 	{
-		gridUI.createPrefab ();
-		grid = gridUI.guiObject.GetComponent<CellsGridView>();
+        CityCellView[] viewCells = GetComponentsInChildren<CityCellView>();
+        foreach (CityCellView cell in viewCells)
+        {
+            CityNode.cells.Add(cell.CityCell);
+            cell.setVisible(false);
+        }
+
+		//gridUI.createPrefab ();
+		//grid = gridUI.guiObject.GetComponent<CellsGridView>();
 	}
 
     public virtual bool CanGoTo()

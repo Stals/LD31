@@ -123,6 +123,9 @@ public abstract class UnitControllerBase : EntityController {
     
     public virtual void GoTo(UnitViewModel unit, MapNodeViewModel arg) {
     }
+    
+    public virtual void InitUnit(UnitViewModel unit, MapNodeViewModel arg) {
+    }
 }
 
 public abstract class CityCellControllerBase : Controller {

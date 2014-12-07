@@ -7,23 +7,27 @@ public class MovingBetweenNodesController {
 
     float totalLength = 0;
     float nowLength = 0;
-    bool reachedEnd = false;
+    public bool reachedEnd = false;
+
+    int nowLinkId;
+    float nowLeftLength;
 
     List<float> linksLengths = new List<float>();
     List<LinkViewModel> links;
-    List<bool> direction = new List<bool>();
-    
+    List<bool> direction = new List<bool>();    
 
-    MovingBetweenNodesController(List<LinkViewModel> inputLinks, MapNodeViewModel start)
+    public MovingBetweenNodesController(List<LinkViewModel> inputLinks, MapNodeViewModel start)
     {
-        float length = 0f;
+        
 
         links = inputLinks;
         MapNodeViewModel nowStart = start;
+        
+        float length = 0f;
 
         for (int i = 0;  i < inputLinks.Count; ++i)
         {
-            float nowL = inputLinks[i].GetPathLength;
+            float nowL = inputLinks[i].PathLength;
             length += nowL;
             linksLengths.Add(nowL);
             if (nowStart == inputLinks[i].node1)
@@ -40,6 +44,11 @@ public class MovingBetweenNodesController {
 
         totalLength = length;
 
+        if (totalLength == 0f)
+        {
+            reachedEnd = true;
+        }
+
         nowLength = 0f;
     }
 
@@ -55,37 +64,156 @@ public class MovingBetweenNodesController {
         }
     }
 
+    void Update()
+    {
+        float toGo = nowLength;
+        int i = 0;
+        while ((toGo > linksLengths[i]) && (i < linksLengths.Count))
+        {
+            toGo -= linksLengths[i];
+            i++;
+        }
+
+        if (i == linksLengths.Count)
+        {
+            nowLinkId = i - 1;
+            nowLeftLength = linksLengths[i];
+        }
+        else
+        {
+            nowLinkId = i;
+            nowLeftLength = toGo;
+        }
+
+       
+    }
+
     Vector3 NowPosition
     {
         get
         {
-            float toGo = nowLength;
-            int i = 0;
-            while ((toGo > linksLengths[i])&&(i < linksLengths.Count))
-            {
-                toGo -= linksLengths[i];
-                i++;
-            }
-
-            if (i == linksLengths.Count)
-            {
-                return PositionInGivenLink(1.0f, i - 1);
-            }
-
-            return PositionInGivenLink(toGo / linksLengths[i], i - 1);
+            return PositionInGivenLink(nowLeftLength / linksLengths[nowLinkId], nowLinkId - 1);
         }
     }
 
-    void moveMe(UnitView objectToMove, float speed)
+    public void moveMe(UnitViewModel objectToMove, float speed)
     {
         nowLength += speed;
         
         if (nowLength >= totalLength)
         {
-            // paste here event on end path
+            reachedEnd = true;
         }
 
-        objectToMove.transform.position = NowPosition;
+        objectToMove.Position = NowPosition;
+
+    }
+
+    public void addWalkedLength(float addedLength)
+    {
+        nowLength += addedLength;
+    }
+
+    public List<LinkViewModel> Links
+    {
+        get { return links; }
+    }
+
+    public float TotalLength
+    {
+        get
+        {
+            return totalLength;
+        }
+    }
+    
+    public void PushLinkToStart(LinkViewModel link)
+    {
+        bool newDirection = false;
+
+        bool allOk = false;
+
+        if (direction[0])
+        {
+            if (link.node2 == links[0].node1)
+            {
+                newDirection = true;
+                allOk = true;
+            }
+            else if (link.node1 == links[0].node1)
+            {
+                newDirection = false;
+                allOk = true;
+            }
+        } else
+        {
+            if (link.node2 == links[0].node2)
+            {
+                newDirection = true;
+                allOk = true;
+            }
+            else if (link.node1 == links[0].node2)
+            {
+                newDirection = false;
+                allOk = true;
+            }
+        }
+
+        if (!allOk)
+        {
+            return;
+        }
+
+        links.Insert(0, link);
+        direction.Insert(0, newDirection);
+        totalLength += link.PathLength;
+                
+    }
+
+    public int NowIndex
+    {
+        get
+        {
+            Update();
+            return nowLinkId;
+        }
+
+    }
+
+    public LinkViewModel NowLink
+    {
+        get
+        {
+            Update();
+            return links[nowLinkId];
+        }
+
+    }
+
+    public float NowLength
+    {
+        get
+        {
+            Update();
+            return nowLength;
+        }
+
+    }
+
+    public MapNodeViewModel NowStartNode
+    {
+        get
+        {
+            Update();
+            if (direction[nowLinkId])
+            {
+                return links[nowLinkId].node1;
+            }
+            else
+            {
+                return links[nowLinkId].node2;
+            }
+        }
 
     }
 

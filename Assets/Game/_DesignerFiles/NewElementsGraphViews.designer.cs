@@ -227,6 +227,10 @@ public abstract class UnitViewBase : EntityViewBase {
     public virtual void ExecuteGoTo(MapNodeViewModel mapNode) {
         this.ExecuteCommand(Unit.GoTo, mapNode);
     }
+    
+    public virtual void ExecuteInitUnit(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.InitUnit, mapNode);
+    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -615,6 +619,10 @@ public class UnitViewViewBase : EntityView {
     
     public virtual void ExecuteGoTo(MapNodeViewModel mapNode) {
         this.ExecuteCommand(Unit.GoTo, mapNode);
+    }
+    
+    public virtual void ExecuteInitUnit(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.InitUnit, mapNode);
     }
 }
 
