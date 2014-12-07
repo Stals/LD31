@@ -150,6 +150,8 @@ public class MapNodeViewModelBase : EntityViewModel {
 
 public partial class MapNodeViewModel : MapNodeViewModelBase {
     
+    private UnitViewModel _ParentUnit;
+    
     private MapViewModel _ParentMap;
     
     private LinkViewModel _ParentLink;
@@ -196,6 +198,15 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     public virtual ModelCollection<LinkViewModel> connections {
         get {
             return this._connectionsProperty;
+        }
+    }
+    
+    public virtual UnitViewModel ParentUnit {
+        get {
+            return this._ParentUnit;
+        }
+        set {
+            _ParentUnit = value;
         }
     }
     
@@ -499,6 +510,10 @@ public class UnitViewModelBase : EntityViewModel {
     
     public P<UnitState> _stateProperty;
     
+    public P<MapNodeViewModel> _currentMapNodeProperty;
+    
+    protected CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel> _GoTo;
+    
     public UnitViewModelBase(UnitControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -511,6 +526,7 @@ public class UnitViewModelBase : EntityViewModel {
         base.Bind();
         _ownerProperty = new P<OwnerViewModel>(this, "owner");
         _stateProperty = new P<UnitState>(this, "state");
+        _currentMapNodeProperty = new P<MapNodeViewModel>(this, "currentMapNode");
     }
 }
 
@@ -557,6 +573,31 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
     }
     
+    public virtual P<MapNodeViewModel> currentMapNodeProperty {
+        get {
+            return this._currentMapNodeProperty;
+        }
+    }
+    
+    public virtual MapNodeViewModel currentMapNode {
+        get {
+            return _currentMapNodeProperty.Value;
+        }
+        set {
+            _currentMapNodeProperty.Value = value;
+            if (value != null) value.ParentUnit = this;
+        }
+    }
+    
+    public virtual CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel> GoTo {
+        get {
+            return _GoTo;
+        }
+        set {
+            _GoTo = value;
+        }
+    }
+    
     public virtual CityCellViewModel ParentCityCell {
         get {
             return this._ParentCityCell;
@@ -568,18 +609,22 @@ public partial class UnitViewModel : UnitViewModelBase {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var unit = controller as UnitControllerBase;
+        this.GoTo = new CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel>(this, unit.GoTo);
     }
     
     public override void Write(ISerializerStream stream) {
 		base.Write(stream);
 		if (stream.DeepSerialize) stream.SerializeObject("owner", this.owner);
 		stream.SerializeInt("state", (int)this.state);
+		if (stream.DeepSerialize) stream.SerializeObject("currentMapNode", this.currentMapNode);
     }
     
     public override void Read(ISerializerStream stream) {
 		base.Read(stream);
 		if (stream.DeepSerialize) this.owner = stream.DeserializeObject<OwnerViewModel>("owner");
 		this.state = (UnitState)stream.DeserializeInt("state");
+		if (stream.DeepSerialize) this.currentMapNode = stream.DeserializeObject<MapNodeViewModel>("currentMapNode");
     }
     
     public override void Unbind() {
@@ -590,10 +635,12 @@ public partial class UnitViewModel : UnitViewModelBase {
         base.FillProperties(list);;
         list.Add(new ViewModelPropertyInfo(_ownerProperty, true, false, false));
         list.Add(new ViewModelPropertyInfo(_stateProperty, false, false, true));
+        list.Add(new ViewModelPropertyInfo(_currentMapNodeProperty, true, false, false));
     }
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("GoTo", GoTo) { ParameterType = typeof(MapNodeViewModel) });
     }
 }
 

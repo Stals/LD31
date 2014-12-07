@@ -39,6 +39,7 @@ public abstract class OwnerControllerBase : Controller {
 
 public abstract class MapNodeControllerBase : EntityController {
     
+    [Inject] public UnitController UnitController {get;set;}
     [Inject] public MapController MapController {get;set;}
     [Inject] public LinkController LinkController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
@@ -99,6 +100,7 @@ public abstract class UnitControllerBase : EntityController {
     
     [Inject] public CityCellController CityCellController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
+    [Inject] public MapNodeController MapNodeController {get;set;}
     public abstract void InitializeUnit(UnitViewModel unit);
     
     public override ViewModel CreateEmpty() {
@@ -112,6 +114,9 @@ public abstract class UnitControllerBase : EntityController {
     public override void Initialize(ViewModel viewModel) {
         base.Initialize(viewModel);
         this.InitializeUnit(((UnitViewModel)(viewModel)));
+    }
+    
+    public virtual void GoTo(UnitViewModel unit, MapNodeViewModel arg) {
     }
 }
 

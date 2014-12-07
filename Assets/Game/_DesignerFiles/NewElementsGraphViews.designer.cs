@@ -183,6 +183,10 @@ public abstract class UnitViewBase : EntityViewBase {
     [UnityEngine.HideInInspector()]
     public UnitState _state;
     
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public ViewBase _currentMapNode;
+    
     public override System.Type ViewModelType {
         get {
             return typeof(UnitViewModel);
@@ -207,6 +211,11 @@ public abstract class UnitViewBase : EntityViewBase {
         UnitViewModel unit = ((UnitViewModel)(viewModel));
         unit.owner = this._owner == null ? null : this._owner.ViewModelObject as OwnerViewModel;
         unit.state = this._state;
+        unit.currentMapNode = this._currentMapNode == null ? null : this._currentMapNode.ViewModelObject as MapNodeViewModel;
+    }
+    
+    public virtual void ExecuteGoTo(MapNodeViewModel mapNode) {
+        this.ExecuteCommand(Unit.GoTo, mapNode);
     }
 }
 
