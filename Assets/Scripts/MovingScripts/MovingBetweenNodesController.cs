@@ -66,14 +66,20 @@ public class MovingBetweenNodesController {
 
     void Update()
     {
+        if (linksLengths.Count == 0)
+        {
+            return;
+        }
+
+
         float toGo = nowLength;
         int i = 0;
-        while ((toGo > linksLengths[i]) && (i < linksLengths.Count))
+        while ((i < linksLengths.Count) && (toGo > linksLengths[i]))
         {
             toGo -= linksLengths[i];
             i++;
         }
-
+        
         if (i == linksLengths.Count)
         {
             nowLinkId = i - 1;
@@ -99,7 +105,9 @@ public class MovingBetweenNodesController {
     public void moveMe(UnitViewModel objectToMove, float speed)
     {
         nowLength += speed;
-        
+
+        Update();
+
         if (nowLength >= totalLength)
         {
             reachedEnd = true;

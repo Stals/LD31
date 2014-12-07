@@ -115,6 +115,46 @@ public class PathManager : MonoBehaviour
     }
 
 
+    //taken and modified from
+    //http://code.google.com/p/hotween/source/browse/trunk/Holoville/HOTween/Core/Path.cs
+    //draws the full path
+    public void PrepareCurved()
+    {
+        if (waypoints.Length < 2) return;
+
+        points = new Vector3[waypoints.Length + 2];
+
+        for (int i = 0; i < waypoints.Length; i++)
+        {
+            points[i + 1] = waypoints[i].position;
+        }
+
+        points[0] = points[1];
+        points[points.Length - 1] = points[points.Length - 2];
+
+        Vector3[] drawPs;
+        Vector3 currPt;
+
+        // Store draw points.
+        int subdivisions = points.Length * 10;
+        drawPs = new Vector3[subdivisions + 1];
+        for (int i = 0; i <= subdivisions; ++i)
+        {
+            float pm = i / (float)subdivisions;
+            currPt = GetPoint(pm);
+            drawPs[i] = currPt;
+        }
+
+        // Draw path.
+        Vector3 prevPt = drawPs[0];
+        for (int i = 1; i < drawPs.Length; ++i)
+        {
+            currPt = drawPs[i];
+            prevPt = currPt;
+        }
+    }
+
+
     //taken from
     //http://code.google.com/p/hotween/source/browse/trunk/Holoville/HOTween/Core/Path.cs
     // Gets the point on the curve at the given percentage (0 to 1).

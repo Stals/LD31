@@ -18,7 +18,7 @@ public partial class LinkViewModel {
         myPath = inPath;
         first.AddNeighbor(this, second);
         second.AddNeighbor(this, first);
-        
+        myPath.PrepareCurved();
     }
 
     public float PathLength

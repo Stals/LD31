@@ -124,7 +124,11 @@ public class UnitController : UnitControllerBase
 
         public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
-            movingController.moveMe(unit, GameSceneManager.speed);            
+            movingController.moveMe(unit, GameSceneManager.speed); 
+            if (movingController.reachedEnd)
+            {
+                target.Interact(unit);
+            }
         }
 
         public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
