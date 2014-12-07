@@ -98,11 +98,15 @@ public abstract class CaveNodeControllerBase : MapNodeController {
         base.Initialize(viewModel);
         this.InitializeCaveNode(((CaveNodeViewModel)(viewModel)));
     }
+    
+    public virtual void addUnit(CaveNodeViewModel caveNode, UnitViewModel arg) {
+    }
 }
 
 public abstract class UnitControllerBase : EntityController {
     
     [Inject] public CityNodeController CityNodeController {get;set;}
+    [Inject] public CaveNodeController CaveNodeController {get;set;}
     [Inject] public CityCellController CityCellController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
     [Inject] public MapNodeController MapNodeController {get;set;}

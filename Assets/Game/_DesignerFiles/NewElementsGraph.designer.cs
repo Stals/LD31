@@ -471,6 +471,8 @@ public class CaveNodeViewModelBase : MapNodeViewModel {
     
     public P<Int32> _goldProperty;
     
+    protected CommandWithSenderAndArgument<CaveNodeViewModel, UnitViewModel> _addUnit;
+    
     public CaveNodeViewModelBase(CaveNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -558,8 +560,19 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
         }
     }
     
+    public virtual CommandWithSenderAndArgument<CaveNodeViewModel, UnitViewModel> addUnit {
+        get {
+            return _addUnit;
+        }
+        set {
+            _addUnit = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var caveNode = controller as CaveNodeControllerBase;
+        this.addUnit = new CommandWithSenderAndArgument<CaveNodeViewModel, UnitViewModel>(this, caveNode.addUnit);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -592,6 +605,7 @@ public partial class CaveNodeViewModel : CaveNodeViewModelBase {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("addUnit", addUnit) { ParameterType = typeof(UnitViewModel) });
     }
 }
 
@@ -629,6 +643,8 @@ public class UnitViewModelBase : EntityViewModel {
 public partial class UnitViewModel : UnitViewModelBase {
     
     private CityNodeViewModel _ParentCityNode;
+    
+    private CaveNodeViewModel _ParentCaveNode;
     
     private CityCellViewModel _ParentCityCell;
     
@@ -720,6 +736,15 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
         set {
             _ParentCityNode = value;
+        }
+    }
+    
+    public virtual CaveNodeViewModel ParentCaveNode {
+        get {
+            return this._ParentCaveNode;
+        }
+        set {
+            _ParentCaveNode = value;
         }
     }
     

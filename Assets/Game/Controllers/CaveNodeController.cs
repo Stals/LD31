@@ -10,4 +10,18 @@ public class CaveNodeController : CaveNodeControllerBase {
     
     public override void InitializeCaveNode(CaveNodeViewModel caveNode) {
     }
+
+    public override void addUnit(CaveNodeViewModel caveNode, UnitViewModel arg)
+    {
+        base.addUnit(caveNode, arg);
+
+        arg.Position = caveNode.position;
+        
+        arg.currentMapNode = caveNode;
+        
+        /*
+        cityNode.Controller
+
+        cityNode.cells.Add(*/
+    }
 }

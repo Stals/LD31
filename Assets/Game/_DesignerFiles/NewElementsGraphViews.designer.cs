@@ -190,6 +190,10 @@ public abstract class CaveNodeViewBase : MapNodeViewBase {
         caveNode.defenseLevel = this._defenseLevel;
         caveNode.gold = this._gold;
     }
+    
+    public virtual void ExecuteaddUnit(UnitViewModel unit) {
+        this.ExecuteCommand(CaveNode.addUnit, unit);
+    }
 }
 
 [DiagramInfoAttribute("Game")]
@@ -780,6 +784,10 @@ public class CaveNodeViewViewBase : MapNodeView {
         caveNode.attackLevel = this._attackLevel;
         caveNode.defenseLevel = this._defenseLevel;
         caveNode.gold = this._gold;
+    }
+    
+    public virtual void ExecuteaddUnit(UnitViewModel unit) {
+        this.ExecuteCommand(CaveNode.addUnit, unit);
     }
 }
 
