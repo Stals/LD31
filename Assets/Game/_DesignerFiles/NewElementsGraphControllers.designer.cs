@@ -126,6 +126,9 @@ public abstract class UnitControllerBase : EntityController {
     
     public virtual void InitUnit(UnitViewModel unit, MapNodeViewModel arg) {
     }
+    
+    public virtual void UpdateMe(UnitViewModel unit) {
+    }
 }
 
 public abstract class CityCellControllerBase : Controller {

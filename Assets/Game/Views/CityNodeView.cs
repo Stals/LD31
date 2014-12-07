@@ -27,9 +27,10 @@ public partial class CityNodeView {
 		setupCells ();
 	}
 
+    CityCellView[] viewCells;
 	void setupCells()
 	{
-        CityCellView[] viewCells = GetComponentsInChildren<CityCellView>();
+        viewCells = GetComponentsInChildren<CityCellView>();
         foreach (CityCellView cell in viewCells)
         {
             CityNode.cells.Add(cell.CityCell);

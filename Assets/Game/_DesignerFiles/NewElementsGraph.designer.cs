@@ -566,6 +566,8 @@ public class UnitViewModelBase : EntityViewModel {
     
     protected CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel> _InitUnit;
     
+    protected CommandWithSender<UnitViewModel> _UpdateMe;
+    
     public UnitViewModelBase(UnitControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -661,6 +663,15 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
     }
     
+    public virtual CommandWithSender<UnitViewModel> UpdateMe {
+        get {
+            return _UpdateMe;
+        }
+        set {
+            _UpdateMe = value;
+        }
+    }
+    
     public virtual CityNodeViewModel ParentCityNode {
         get {
             return this._ParentCityNode;
@@ -684,6 +695,7 @@ public partial class UnitViewModel : UnitViewModelBase {
         var unit = controller as UnitControllerBase;
         this.GoTo = new CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel>(this, unit.GoTo);
         this.InitUnit = new CommandWithSenderAndArgument<UnitViewModel, MapNodeViewModel>(this, unit.InitUnit);
+        this.UpdateMe = new CommandWithSender<UnitViewModel>(this, unit.UpdateMe);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -715,6 +727,7 @@ public partial class UnitViewModel : UnitViewModelBase {
         base.FillCommands(list);;
         list.Add(new ViewModelCommandInfo("GoTo", GoTo) { ParameterType = typeof(MapNodeViewModel) });
         list.Add(new ViewModelCommandInfo("InitUnit", InitUnit) { ParameterType = typeof(MapNodeViewModel) });
+        list.Add(new ViewModelCommandInfo("UpdateMe", UpdateMe) { ParameterType = typeof(void) });
     }
 }
 
