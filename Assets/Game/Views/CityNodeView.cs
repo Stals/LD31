@@ -12,13 +12,13 @@ public partial class CityNodeView {
     public override void maxCellsChanged(Int32 value) {
         base.maxCellsChanged(value);
 
-		grid.cellsCountChanged (value);
+		//grid.cellsCountChanged (value);
     }
 
-	[SerializeField]
-	SpawnFollowingUI gridUI;
+	//[SerializeField]
+	//SpawnFollowingUI gridUI;
 
-	CellsGridView grid;
+	//CellsGridView grid;
 
 	public override void Awake ()
 	{
