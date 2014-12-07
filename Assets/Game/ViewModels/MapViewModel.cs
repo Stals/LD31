@@ -6,6 +6,7 @@ using UnityEngine;
 
 
 public partial class MapViewModel {
-
-
+	List<MapNodeViewModel> getNodes(){
+		return GraphManager.Instance.MapNodes;
+	}
 }

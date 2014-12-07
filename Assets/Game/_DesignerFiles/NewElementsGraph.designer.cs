@@ -280,6 +280,8 @@ public class CityNodeViewModelBase : MapNodeViewModel {
     
     public ModelCollection<CityCellViewModel> _cellsProperty;
     
+    protected CommandWithSenderAndArgument<CityNodeViewModel, UnitViewModel> _addUnit;
+    
     public CityNodeViewModelBase(CityNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -346,8 +348,19 @@ public partial class CityNodeViewModel : CityNodeViewModelBase {
         }
     }
     
+    public virtual CommandWithSenderAndArgument<CityNodeViewModel, UnitViewModel> addUnit {
+        get {
+            return _addUnit;
+        }
+        set {
+            _addUnit = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var cityNode = controller as CityNodeControllerBase;
+        this.addUnit = new CommandWithSenderAndArgument<CityNodeViewModel, UnitViewModel>(this, cityNode.addUnit);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -381,6 +394,7 @@ if (stream.DeepSerialize) {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("addUnit", addUnit) { ParameterType = typeof(UnitViewModel) });
     }
     
     protected override void cellsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
@@ -532,6 +546,8 @@ public class UnitViewModelBase : EntityViewModel {
 
 public partial class UnitViewModel : UnitViewModelBase {
     
+    private CityNodeViewModel _ParentCityNode;
+    
     private CityCellViewModel _ParentCityCell;
     
     public UnitViewModel(UnitControllerBase controller, bool initialize = true) : 
@@ -595,6 +611,15 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
         set {
             _GoTo = value;
+        }
+    }
+    
+    public virtual CityNodeViewModel ParentCityNode {
+        get {
+            return this._ParentCityNode;
+        }
+        set {
+            _ParentCityNode = value;
         }
     }
     

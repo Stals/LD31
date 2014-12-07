@@ -5,4 +5,6 @@ using System.Linq;
 
 
 public sealed partial class GameSceneManagerSettings {
+
+	public float speed;
 }
