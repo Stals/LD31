@@ -16,7 +16,7 @@ public partial class CaveNodeView {
     public override void goldLevelChanged(Int32 value) {
         base.goldLevelChanged(value);
 
-        CaveNode.gold = gold [value];
+        CaveNode.gold = gold [value - 1];
     }
 
     /// Subscribes to the property and is notified anytime the value changes.
@@ -24,14 +24,14 @@ public partial class CaveNodeView {
         base.attackLevelChanged(value);
 
 		
-        CaveNode.attack = attack[value];
+        CaveNode.attack = attack[value - 1];
     }
 
     /// Subscribes to the property and is notified anytime the value changes.
     public override void defenseLevelChanged(Int32 value) {
         base.defenseLevelChanged(value);
 
-        CaveNode.defence = defense[value];
+        CaveNode.defence = defense[value - 1];
     }
 
 }
