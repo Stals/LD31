@@ -8,32 +8,28 @@ using UnityEngine;
 public partial class UnitViewModel
 {
 
+    UnitController.UnitBehavior myBehavior;
 
-    #region Classes
-
-    abstract class UnitBehavior
+    public UnitController.UnitBehavior MyBehavior
     {
-        public void UpdateMe(UnitViewModel unit)
-        {
-
-        }
-
+        get { return myBehavior; }
+        set { myBehavior = value; }
     }
 
+    Vector3 myPosition;
 
-    class GoToNodeBehavior : UnitBehavior
+    public Vector3 Position
     {
-        public GoToNodeBehavior(MapNodeViewModel toNode, MapNodeViewModel fromNode)
+        get
         {
-
+            return myPosition;
         }
 
-
+        set
+        {
+            myPosition = value;
+        }
     }
-
-    #endregion
-
-    UnitBehavior myBehavior;
 
 
 

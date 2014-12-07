@@ -36,7 +36,13 @@ public class MovingControllerCreator {
 
     public MovingBetweenNodesController CreatePath(MapNodeViewModel from, MapNodeViewModel to)
     {
+
         IEnumerable<int> newPath = pathFinder.getPath(from, to);
+
+        if (newPath == null)
+        {
+            return null;
+        }
 
         List<LinkViewModel> links = new List<LinkViewModel>();
         MapNodeViewModel now = from;
@@ -49,5 +55,10 @@ public class MovingControllerCreator {
 
         MovingBetweenNodesController move = new MovingBetweenNodesController(links, from);
         return move;
+    }
+
+    public MovingBetweenNodesController CreateEmptyPath()
+    {
+        return null;
     }
 }

@@ -28,7 +28,7 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
 
         newInfo.link = newLink;
         newInfo.neighbor = mapViewModel;
-        newInfo.distance = newLink.GetPathLength;
+        newInfo.distance = newLink.PathLength;
 
 
         allNeighbors.Add(newInfo);

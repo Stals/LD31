@@ -7,4 +7,10 @@ using UniRx;
 
 
 public partial class UnitView {
+
+    public override void Awake()
+    {
+        base.Awake();
+        Unit.Controller.Initialize(Unit, Unit.currentMapNode
+    }
 }

@@ -21,7 +21,7 @@ public partial class LinkViewModel {
         
     }
 
-    public float GetPathLength
+    public float PathLength
     {
         get
         {
