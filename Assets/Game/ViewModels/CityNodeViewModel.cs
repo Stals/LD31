@@ -16,14 +16,7 @@ public partial class CityNodeViewModel {
         return false;
     }
 
-    public override void Interact(UnitViewModel unit)
-    {
-        base.Interact(unit);
 
-        unit.MyBehavior = new UnitController.InCityBehavior(this);
-
-        ((CityNodeController)(Controller)).addUnit(this, unit);
-    }
 }
 
 

@@ -32,6 +32,12 @@ namespace SimpleDeixtra
                 float newDistance = currentValue + from.MyNeighborDistance(i);
                 int currentNeighborIndex = from.MyNeighbor(i).MyIndex;
 
+                if (!from.MyNeighbor(i).IActive)
+                {
+                    currentChecked[currentNeighborIndex] = true;
+                    continue;
+                }
+
                 if (newDistance < currentWeights[currentNeighborIndex])
                 {
                     currentWeights[currentNeighborIndex] = newDistance;

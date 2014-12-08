@@ -80,12 +80,12 @@ public partial class MapNodeViewModel: IWeightGraphElement  {
         return owner == GameSceneManager.player;
     }
 
-    public virtual void Interact(UnitViewModel unit){
-
-    }
-
-    public virtual void UnInteract(UnitViewModel unit){
-        
+    public bool IActive
+    {
+        get
+        {
+            return isFriendly();
+        }
     }
 
     #endregion

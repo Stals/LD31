@@ -10,5 +10,7 @@ namespace SimpleDeixtra
         int NumberOfNeighbors { get; }
         IWeightGraphElement MyNeighbor(int ind);
         float MyNeighborDistance(int ind);
+
+        bool IActive { get; }
     }
 }

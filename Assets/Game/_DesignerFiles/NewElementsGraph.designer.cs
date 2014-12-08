@@ -130,6 +130,10 @@ public class MapNodeViewModelBase : EntityViewModel {
     
     public ModelCollection<LinkViewModel> _connectionsProperty;
     
+    protected CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> _Interact;
+    
+    protected CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> _UnInteract;
+    
     public MapNodeViewModelBase(MapNodeControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -219,6 +223,24 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
         }
     }
     
+    public virtual CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> Interact {
+        get {
+            return _Interact;
+        }
+        set {
+            _Interact = value;
+        }
+    }
+    
+    public virtual CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel> UnInteract {
+        get {
+            return _UnInteract;
+        }
+        set {
+            _UnInteract = value;
+        }
+    }
+    
     public virtual UnitViewModel ParentUnit {
         get {
             return this._ParentUnit;
@@ -248,6 +270,9 @@ public partial class MapNodeViewModel : MapNodeViewModelBase {
     
     protected override void WireCommands(Controller controller) {
         base.WireCommands(controller);
+        var mapNode = controller as MapNodeControllerBase;
+        this.Interact = new CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel>(this, mapNode.Interact);
+        this.UnInteract = new CommandWithSenderAndArgument<MapNodeViewModel, UnitViewModel>(this, mapNode.UnInteract);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -284,6 +309,8 @@ if (stream.DeepSerialize) {
     
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
+        list.Add(new ViewModelCommandInfo("Interact", Interact) { ParameterType = typeof(UnitViewModel) });
+        list.Add(new ViewModelCommandInfo("UnInteract", UnInteract) { ParameterType = typeof(UnitViewModel) });
     }
     
     protected override void connectionsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs args) {
@@ -642,6 +669,8 @@ public class UnitViewModelBase : EntityViewModel {
 
 public partial class UnitViewModel : UnitViewModelBase {
     
+    private MapNodeViewModel _ParentMapNode;
+    
     private CityNodeViewModel _ParentCityNode;
     
     private CaveNodeViewModel _ParentCaveNode;
@@ -727,6 +756,15 @@ public partial class UnitViewModel : UnitViewModelBase {
         }
         set {
             _UpdateMe = value;
+        }
+    }
+    
+    public virtual MapNodeViewModel ParentMapNode {
+        get {
+            return this._ParentMapNode;
+        }
+        set {
+            _ParentMapNode = value;
         }
     }
     
@@ -931,6 +969,8 @@ public class EntityViewModelBase : ViewModel {
     
     protected CommandWithSenderAndArgument<EntityViewModel, Int32> _TakeDamage;
     
+    protected CommandWithSender<EntityViewModel> _Command;
+    
     public EntityViewModelBase(EntityControllerBase controller, bool initialize = true) : 
             base(controller, initialize) {
     }
@@ -1012,9 +1052,19 @@ public partial class EntityViewModel : EntityViewModelBase {
         }
     }
     
+    public virtual CommandWithSender<EntityViewModel> Command {
+        get {
+            return _Command;
+        }
+        set {
+            _Command = value;
+        }
+    }
+    
     protected override void WireCommands(Controller controller) {
         var entity = controller as EntityControllerBase;
         this.TakeDamage = new CommandWithSenderAndArgument<EntityViewModel, Int32>(this, entity.TakeDamage);
+        this.Command = new CommandWithSender<EntityViewModel>(this, entity.Command);
     }
     
     public override void Write(ISerializerStream stream) {
@@ -1045,6 +1095,7 @@ public partial class EntityViewModel : EntityViewModelBase {
     protected override void FillCommands(List<ViewModelCommandInfo> list) {
         base.FillCommands(list);;
         list.Add(new ViewModelCommandInfo("TakeDamage", TakeDamage) { ParameterType = typeof(Int32) });
+        list.Add(new ViewModelCommandInfo("Command", Command) { ParameterType = typeof(void) });
     }
 }
 

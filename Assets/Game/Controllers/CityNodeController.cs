@@ -16,6 +16,9 @@ public class CityNodeController : CityNodeControllerBase {
     {
         base.addUnit(cityNode, arg);
 
+
+        arg.MyBehavior = new UnitController.InCityBehavior(cityNode);
+
         arg.Position = cityNode.position;
 
         arg.currentMapNode = cityNode;
@@ -24,5 +27,12 @@ public class CityNodeController : CityNodeControllerBase {
         cityNode.Controller
 
         cityNode.cells.Add(*/
+    }
+
+    public override void Interact(MapNodeViewModel mapNode, UnitViewModel arg)
+    {
+        base.Interact(mapNode, arg);
+
+        addUnit((CityNodeViewModel)mapNode, arg);
     }
 }

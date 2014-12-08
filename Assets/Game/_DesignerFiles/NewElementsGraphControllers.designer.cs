@@ -58,6 +58,12 @@ public abstract class MapNodeControllerBase : EntityController {
         base.Initialize(viewModel);
         this.InitializeMapNode(((MapNodeViewModel)(viewModel)));
     }
+    
+    public virtual void Interact(MapNodeViewModel mapNode, UnitViewModel arg) {
+    }
+    
+    public virtual void UnInteract(MapNodeViewModel mapNode, UnitViewModel arg) {
+    }
 }
 
 public abstract class CityNodeControllerBase : MapNodeController {
@@ -105,11 +111,11 @@ public abstract class CaveNodeControllerBase : MapNodeController {
 
 public abstract class UnitControllerBase : EntityController {
     
+    [Inject] public MapNodeController MapNodeController {get;set;}
     [Inject] public CityNodeController CityNodeController {get;set;}
     [Inject] public CaveNodeController CaveNodeController {get;set;}
     [Inject] public CityCellController CityCellController {get;set;}
     [Inject] public OwnerController OwnerController {get;set;}
-    [Inject] public MapNodeController MapNodeController {get;set;}
     public abstract void InitializeUnit(UnitViewModel unit);
     
     public override ViewModel CreateEmpty() {
@@ -178,6 +184,9 @@ public abstract class EntityControllerBase : Controller {
     }
     
     public virtual void TakeDamage(EntityViewModel entity, Int32 arg) {
+    }
+    
+    public virtual void Command(EntityViewModel entity) {
     }
 }
 

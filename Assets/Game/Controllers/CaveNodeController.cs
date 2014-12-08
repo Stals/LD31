@@ -18,10 +18,19 @@ public class CaveNodeController : CaveNodeControllerBase {
         arg.Position = caveNode.position;
         
         arg.currentMapNode = caveNode;
+
+        arg.MyBehavior = new UnitController.InCityBehavior(caveNode);
         
         /*
         cityNode.Controller
 
         cityNode.cells.Add(*/
+    }
+
+    public override void Interact(MapNodeViewModel mapNode, UnitViewModel arg)
+    {
+        base.Interact(mapNode, arg);
+
+        addUnit((CaveNodeViewModel)mapNode, arg);
     }
 }

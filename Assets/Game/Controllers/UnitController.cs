@@ -64,19 +64,34 @@ public class UnitController : UnitControllerBase
 
         MapNodeViewModel target;
 
-
-        public GoToNodeBehavior(MapNodeViewModel fromNode, MapNodeViewModel toNode)
+        private GoToNodeBehavior(MovingBetweenNodesController movingController, MapNodeViewModel target)
         {
-            movingController = MovingControllerCreator.Instance.CreatePath(fromNode, toNode);
-
-            target = toNode;
-
+            this.movingController = movingController;
+            this.target = target;
         }
 
-        public GoToNodeBehavior(MapNodeViewModel toNode, PositionInfo standBehavior)
+        static public GoToNodeBehavior tryCreateBehavior(MapNodeViewModel fromNode, MapNodeViewModel toNode)
         {
+            GoToNodeBehavior newGoingBehavior = null;
+
+            MovingBetweenNodesController movingController = MovingControllerCreator.Instance.CreatePath(fromNode, toNode);
+            MapNodeViewModel target = toNode;
+
+            if (movingController != null)
+            {
+                newGoingBehavior = new GoToNodeBehavior(movingController, target);
+            }
+
+            return newGoingBehavior; 
             
-            target = toNode;
+        }
+
+        static public GoToNodeBehavior tryCreateBehavior(MapNodeViewModel toNode, PositionInfo standBehavior)
+        {
+
+            GoToNodeBehavior newGoingBehavior = null;
+
+            MapNodeViewModel target = toNode;
 
             MovingBetweenNodesController firstControllerPath = MovingControllerCreator.Instance.CreatePath(standBehavior.MyCurrentLink.node1, toNode);
             MovingBetweenNodesController secondControllerPath = MovingControllerCreator.Instance.CreatePath(standBehavior.MyCurrentLink.node2, toNode);
@@ -108,18 +123,19 @@ public class UnitController : UnitControllerBase
 
             if (chosenPath == 1)
             {
-                movingController = firstControllerPath;
-                movingController.PushLinkToStart(standBehavior.MyCurrentLink);
-                movingController.addWalkedLength(standBehavior.MyCurrentWalk);
+                firstControllerPath.PushLinkToStart(standBehavior.MyCurrentLink);
+                firstControllerPath.addWalkedLength(standBehavior.MyCurrentWalk);
+                newGoingBehavior = new GoToNodeBehavior(firstControllerPath, target);
             }
 
-            if (chosenPath == 1)
+            if (chosenPath == 2)
             {
-                movingController = firstControllerPath;
-                movingController.PushLinkToStart(standBehavior.MyCurrentLink);
-                movingController.addWalkedLength(standBehavior.MyCurrentLink.PathLength - standBehavior.MyCurrentWalk);
+                secondControllerPath.PushLinkToStart(standBehavior.MyCurrentLink);
+                secondControllerPath.addWalkedLength(standBehavior.MyCurrentLink.PathLength - standBehavior.MyCurrentWalk);
+                newGoingBehavior = new GoToNodeBehavior(secondControllerPath, target);
             }
 
+            return newGoingBehavior;
         }
 
         public override void UpdateMe(UnitViewModel unit, UnitController controller)
@@ -127,7 +143,9 @@ public class UnitController : UnitControllerBase
             movingController.moveMe(unit, GameSceneManager.speed); 
             if (movingController.reachedEnd)
             {
-                target.Interact(unit);
+
+                MapNodeViewModel nowTarget = target;
+                controller.ExecuteCommand(nowTarget.Interact, unit);
             }
         }
 
@@ -138,7 +156,13 @@ public class UnitController : UnitControllerBase
             nowInfo.MyCurrentLink = movingController.NowLink;
             nowInfo.MyCurrentWalk = movingController.NowLength;
 
-            unit.MyBehavior = new GoToNodeBehavior(target, nowInfo);
+            GoToNodeBehavior newBehavior = GoToNodeBehavior.tryCreateBehavior(target, nowInfo);
+
+            if (newBehavior != null)
+            {
+                unit.MyBehavior = newBehavior;
+            }
+
         }
     }
 
@@ -172,9 +196,12 @@ public class UnitController : UnitControllerBase
 
         public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
-            unit.MyBehavior = new GoToNodeBehavior(target, myPosInfo);
+            GoToNodeBehavior newBehavior = GoToNodeBehavior.tryCreateBehavior(target, myPosInfo);
+            if (newBehavior != null)
+            {
+                unit.MyBehavior = newBehavior;
+            }
         }
-
     }
 
     public class InCityBehavior : UnitBehavior
@@ -198,16 +225,31 @@ public class UnitController : UnitControllerBase
 
         public override void GoToNode(UnitViewModel unit, UnitController controller, MapNodeViewModel target)
         {
-            unit.MyBehavior = new GoToNodeBehavior(nowNode, target);
+            GoToNodeBehavior newBehavior = GoToNodeBehavior.tryCreateBehavior(nowNode, target);
+            if (newBehavior != null)
+            {
+                unit.MyBehavior = newBehavior;
+            }
         }
     }
 
     public abstract class AttackBehavior : UnitBehavior
     {
+        MapNodeViewModel enemyNode;
 
+        Vector3 position;
+
+        public AttackBehavior(MapNodeViewModel enemy, Vector3 nowPosition)
+        {
+            enemyNode = enemy;
+            position = nowPosition;
+
+
+        }
 
         public override void UpdateMe(UnitViewModel unit, UnitController controller)
         {
+            controller.ExecuteCommand(enemyNode.TakeDamage, unit.attack);
 
         }
 
