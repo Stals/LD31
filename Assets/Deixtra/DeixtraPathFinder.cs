@@ -82,31 +82,32 @@ namespace SimpleDeixtra
             }
 
             IWeightGraphElement nowElem = to;
-            //int safeCounter = 0;
+            int safeCounter = 0;
 
-            while (nowWeight > 0f)
+            while ((nowWeight > 0f)&&(safeCounter < 2000))
             {
-                float minValue = nowWeight;
-                IWeightGraphElement bestHeighbor = nowElem;
+                safeCounter++;
+                IWeightGraphElement bestNeighbor = nowElem;
+                float bestValue = currentWeights[nowElem.MyIndex] * 2f;
                 for (int i = 0; i < nowElem.NumberOfNeighbors; ++i)
                 {
-                    if (currentWeights[nowElem.MyNeighbor(i).MyIndex] < minValue)
+                    float nowValue = currentWeights[nowElem.MyNeighbor(i).MyIndex] + nowElem.MyNeighborDistance(i);
+                    if (nowValue < bestValue)
                     {
-                        minValue = currentWeights[nowElem.MyNeighbor(i).MyIndex];
-                        bestHeighbor = nowElem.MyNeighbor(i);
+                        bestValue = nowValue;
+                        bestNeighbor = nowElem.MyNeighbor(i);
                     }
                 }
 
-                for (int i = 0; i < bestHeighbor.NumberOfNeighbors; ++i)
+                for (int i = 0; i < bestNeighbor.NumberOfNeighbors; ++i)
                 {
-                    if (bestHeighbor.MyNeighbor(i) == nowElem)
+                    if (bestNeighbor.MyNeighbor(i) == nowElem)
                     {
                         result.Add(i);
                     }
                 }
 
-                nowElem = bestHeighbor;
-                nowWeight = minValue;
+                nowElem = bestNeighbor;
             }
             
             result.Reverse();
