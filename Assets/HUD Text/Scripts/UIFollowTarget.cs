@@ -82,7 +82,7 @@ public class UIFollowTarget : MonoBehaviour
 	/// Update the position of the HUD object every frame such that is position correctly over top of its real world object.
 	/// </summary>
 
-	void Update ()
+	void LateUpdate ()
 	{
 		Vector3 pos = gameCamera.WorldToViewportPoint(target.position);
 
