@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SpawnFollowingUI : MonoBehaviour {
 
-    [SerializeField]
     Camera uiCamera;
 
     [SerializeField]
@@ -12,6 +11,8 @@ public class SpawnFollowingUI : MonoBehaviour {
     [HideInInspector]
     public GameObject guiObject;
 
+	
+
 	// Use this for initialization
 	void Start () {
 
@@ -19,6 +20,8 @@ public class SpawnFollowingUI : MonoBehaviour {
 
     public void createPrefab()
     {
+    	uiCamera = NGUITools.FindCameraForLayer(gameObject.layer);
+    	
         guiObject = NGUITools.AddChild(uiCamera.transform.parent.gameObject, guiPrefab);
         UIFollowTarget followTargetScript = guiObject.AddComponent<UIFollowTarget>();
 
