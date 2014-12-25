@@ -20,8 +20,9 @@ public class SpawnFollowingUI : MonoBehaviour {
 
     public void createPrefab()
     {
-    	uiCamera = NGUITools.FindCameraForLayer(gameObject.layer);
-    	
+        uiCamera = UICamera.mainCamera;
+        GameObject go = uiCamera.transform.parent.gameObject;
+
         guiObject = NGUITools.AddChild(uiCamera.transform.parent.gameObject, guiPrefab);
         UIFollowTarget followTargetScript = guiObject.AddComponent<UIFollowTarget>();
 
